@@ -1,9 +1,21 @@
-
-
 module.exports = (sequelize, DataTypes) => {
-    return sequelize.define('account', {
-            account_id: {type: DataTypes.STRING(20), allowNull:false, primaryKey: true},
-            user_id: {type: DataTypes.STRING(20), allowNull: false, foreignkey: true},
-            money: { type: DataTypes.STRING(10), allowNull: false, },
+    const account = sequelize.define('account', {
+        account_id: {
+            type: DataTypes.STRING(20),
+            allowNull:false,
+            primaryKey: true
         },
-        { timestamps:false, }); }
+        money: {
+            type: DataTypes.STRING(20),
+            allowNull:false
+        },
+        email: {
+            type: DataTypes.STRING(20),
+            allowNull: false,
+        }
+    });
+    account.associate = function (models) {
+        account.belongsTo(models.user,{foreignKey: "email"});
+    };
+    return account;
+};

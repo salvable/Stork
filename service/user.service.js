@@ -1,5 +1,5 @@
 const db = require('../models')
-const users = db["users"]
+const users = db["user"]
 
 exports.addUser = async (userId,password,email,name,phoneNumber) => {
     try {
