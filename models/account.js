@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
     const account = sequelize.define('account', {
-        account_id: {
+        accountId: {
             type: DataTypes.STRING(20),
             allowNull:false,
             primaryKey: true
@@ -8,14 +8,10 @@ module.exports = (sequelize, DataTypes) => {
         money: {
             type: DataTypes.STRING(20),
             allowNull:false
-        },
-        email: {
-            type: DataTypes.STRING(20),
-            allowNull: false,
         }
     });
     account.associate = function (models) {
-        account.belongsTo(models.user,{foreignKey: "email"});
+        account.belongsTo(models.user,{foreignKey: "userId"});
     };
     return account;
 };

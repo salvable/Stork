@@ -11,7 +11,7 @@ exports.addUser = async (userId,password,email,name,phoneNumber) => {
         }
 
         const newUser = await users.create({
-            id: userId,
+            userId: userId,
             password: password,
             email: email,
             name: name,
