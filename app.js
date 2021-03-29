@@ -19,6 +19,7 @@ const driver = async () =>{
     try{
         await sequelize.sync({force:true});
     } catch (err) {
+        console.log(err)
         console.log("init Fail");
         return;
     }
