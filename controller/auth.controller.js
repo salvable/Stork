@@ -4,8 +4,9 @@ const secretObj = require("../config/jwt")
 const db = require('../models')
 const users = db["users"]
 const createError = require('http-errors')
+const authService = require('../service/auth.service')
 
-exports.getAuth = async (req, res, next) => {
+exports.Login = async (req, res, next) => {
 
     const id = req.body.id
     const password = req.body.password
@@ -20,18 +21,12 @@ exports.getAuth = async (req, res, next) => {
         return next(createError(404, 'NotFoundError'))
     }
 
-    const token = jwt.sign({
-            id: id,
-            password: password
-        },
-        secretObj.secret,
-        {
-            expiresIn: '15m'
-        }
-    )
+    const token = await authService.signAccessToken(id,password)
+    const refreshToken = await authService.signRefreshToken(id,password)
 
     res.cookie("user", token);
             res.json({
-                token: token
+                token: token,
+                refreshToken: refreshToken
             })
 }
