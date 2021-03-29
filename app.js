@@ -13,7 +13,7 @@ const jwt = require("jsonwebtoken");
 
 app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!');});
 app.post('/adduser' ,userController.addUser)
-app.get('/user', authController.getAuth)
+app.get('/Login', authController.Login)
 
 const driver = async () =>{
     try{
