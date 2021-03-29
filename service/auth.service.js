@@ -1,11 +1,10 @@
 const secretObj = require("../config/jwt")
 const jwt = require("jsonwebtoken");
 
-exports.signAccessToken = async (userId,password) => {
+exports.signAccessToken = async (userId) => {
     try {
         const token = jwt.sign({
-                id: userId,
-                password: password
+                id: userId
             },
             secretObj.secret,
             {
@@ -21,11 +20,10 @@ exports.signAccessToken = async (userId,password) => {
     }
 }
 
-exports.signRefreshToken = async (userId,password) => {
+exports.signRefreshToken = async (userId) => {
     try {
         const token = jwt.sign({
-                id: userId,
-                password: password
+                id: userId
             },
             secretObj.secret,
             {

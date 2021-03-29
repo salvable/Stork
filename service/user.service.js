@@ -33,7 +33,7 @@ exports.getUser = async (userId,password) => {
                 password: password
             }
         })
-        console.log(user)
+
         if(user == null){
             const err = new Error("NotFoundError")
             err.name = "NotFoundError"

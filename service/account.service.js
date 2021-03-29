@@ -10,7 +10,6 @@ exports.addAccount = async (userId) => {
             userId: userId
         })
 
-        console.log(newAccount)
         if(!newAccount){
             const err = new Error("create error")
             err.name = "Bad request"
