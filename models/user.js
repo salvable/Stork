@@ -11,5 +11,9 @@ module.exports = (sequelize, DataTypes) => {
         user.hasOne(models.account,{ foreignKey: 'userId' })
     };
 
+    user.associate = function(models){
+        user.hasMany(models.stork,{ foreignKey: 'userId' })
+    };
+
     return user
 }
