@@ -23,3 +23,33 @@ exports.addAccount = async (userId) => {
         return err.name
     }
 }
+
+exports.addMoney = async (accountId, money) => {
+    try {
+        const Account = await account.findOne({
+            where:{
+                accountId:accountId
+            }
+        })
+
+        if(!Account){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        const updateAccount = await account.update({
+            money: Account.money + money
+        },{
+            where: {
+                accountId: accountId
+            }
+        })
+
+        return updateAccount
+
+    } catch (err) {
+        console.log(err)
+        return err.name
+    }
+}
