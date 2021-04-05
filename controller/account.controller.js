@@ -1,4 +1,5 @@
 const createError = require('http-errors')
+const accountService = require('../service/account.service')
 
 exports.addMoney = async (req, res, next) => {
     const accountId = req.params.accountId
@@ -9,8 +10,13 @@ exports.addMoney = async (req, res, next) => {
     }
 
     try {
+        const account = await accountService.addMoney(accountId,money)
 
-
+        return res.send(
+            {
+                account: account
+            }
+        )
     } catch (err) {
         return res.status(500).json(err)
     }

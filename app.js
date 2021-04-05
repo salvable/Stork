@@ -1,5 +1,6 @@
 const userController = require('./controller/user.controller')
 const authController = require('./controller/auth.controller')
+const accountController = require('./controller/account.controller')
 
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -16,6 +17,7 @@ app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
     '');});
 app.post('/adduser' ,userController.addUser)
 app.get('/Login', authController.Login)
+app.post('/user/account/:accountId', accountController.addMoney)
 
 const driver = async () =>{
     try{

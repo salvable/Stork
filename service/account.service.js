@@ -26,9 +26,11 @@ exports.addAccount = async (userId) => {
 
 exports.addMoney = async (accountId, money) => {
     try {
-        const Account = await account.findOne({
-            where:{
-                accountId:accountId
+        const Account = await account.update({
+            money: Account.money + parseInt(money)
+        },{
+            where: {
+                accountId: accountId
             }
         })
 
@@ -38,13 +40,12 @@ exports.addMoney = async (accountId, money) => {
             throw err
         }
 
-        const updateAccount = await account.update({
-            money: Account.money + money
-        },{
-            where: {
-                accountId: accountId
+        const updateAccount = await account.findOne({
+            where:{
+                accountId:accountId
             }
         })
+
 
         return updateAccount
 
