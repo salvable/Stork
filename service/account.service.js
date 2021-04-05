@@ -58,7 +58,7 @@ exports.addMoney = async (accountId, money) => {
 exports.subMoney = async (accountId, money) => {
     try {
         const Account = await account.update({
-            money: Account.money + parseInt(money)
+            money: Account.money - parseInt(money)
         },{
             where: {
                 accountId: accountId
