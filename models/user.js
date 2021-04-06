@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
     };
 
     user.associate = function(models){
+        user.hasOne(models.grade,{ foreignKey: 'userId' })
+    };
+
+    user.associate = function(models){
         user.hasMany(models.stork,{ foreignKey: 'userId' })
     };
 
