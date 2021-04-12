@@ -1,12 +1,22 @@
 const db = require('../models')
-const account = db["account"]
+const Account = db["account"]
 
 exports.addAccount = async (userId,transaction = undefined) => {
     const t = transaction || undefined
 
     try {
+        const account = await Account.findOne({
+            userId: userId
+        })
+
+        if(account){
+            const err = new Error("ValidationError")
+            err.name = "ValidationError"
+            throw err
+        }
+
         const randomString = Math.floor(Math.random() * 9999999);
-        const newAccount = await account.create({
+        const newAccount = await Account.create({
             accountId: randomString,
             money: 10000000,
             userId: userId
@@ -28,7 +38,7 @@ exports.addAccount = async (userId,transaction = undefined) => {
 
 exports.addMoney = async (accountId, money) => {
     try {
-        const Account = await account.update({
+        const account = await Account.update({
             money: Account.money + parseInt(money)
         },{
             where: {
@@ -36,18 +46,23 @@ exports.addMoney = async (accountId, money) => {
             }
         })
 
-        if(!Account){
+        if(!account){
             const err = new Error("NotFoundError")
             err.name = "NotFoundError"
             throw err
         }
 
-        const updateAccount = await account.findOne({
+        const updateAccount = await Account.findOne({
             where:{
                 accountId:accountId
             }
         })
 
+        if(!updateAccount){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
 
         return updateAccount
 
@@ -59,7 +74,7 @@ exports.addMoney = async (accountId, money) => {
 
 exports.subMoney = async (accountId, money) => {
     try {
-        const Account = await account.update({
+        const account = await Account.update({
             money: Account.money - parseInt(money)
         },{
             where: {
@@ -67,17 +82,23 @@ exports.subMoney = async (accountId, money) => {
             }
         })
 
-        if(!Account){
+        if(!account){
             const err = new Error("NotFoundError")
             err.name = "NotFoundError"
             throw err
         }
 
-        const updateAccount = await account.findOne({
+        const updateAccount = await Account.findOne({
             where:{
                 accountId:accountId
             }
         })
+
+        if(!updateAccount){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
 
         return updateAccount
 
