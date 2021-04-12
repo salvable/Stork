@@ -1,6 +1,7 @@
 const userService = require('../service/user.service.js')
 const accountService = require('../service/account.service.js')
 const createError = require('http-errors')
+const models = require('../models')
 
 exports.addUser = async (req, res, next) => {
     const userId = req.body.userId
@@ -10,16 +11,25 @@ exports.addUser = async (req, res, next) => {
     const phoneNumber = req.body.phoneNumber
 
     try {
-        const user = await userService.addUser(userId,password,email,name,phoneNumber)
 
-        if(user == "ValidationError"){
-            return next(createError(400, 'BadRequestError'))
-        }
+        const {user,account} = await models.sequelize.transaction(async (t) => {
+            const user = await userService.addUser(userId,password,email,name,phoneNumber,t)
 
-        const account = await accountService.addAccount(userId)
-        if(account == "Bad request"){
-            return next(createError(400, 'BadRequestError'))
-        }
+            if(user == "ValidationError"){
+                const err = new Error("ValidationError")
+                err.name = "ValidationError"
+                throw err
+            }
+
+            const account = await accountService.addAccount(userId,t)
+            if(account == "Bad request"){
+                const err = new Error("Bad request")
+                err.name = "Bad request"
+                throw err
+            }
+
+            return {user,account}
+        })
 
         return res.send(
             {
@@ -28,6 +38,8 @@ exports.addUser = async (req, res, next) => {
             }
         )
     } catch (err) {
-        return res.status(500).json(err)
+        return res.send({
+            error: err.name
+        })
     }
 }

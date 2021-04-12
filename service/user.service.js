@@ -1,7 +1,9 @@
 const db = require('../models')
 const users = db["user"]
 
-exports.addUser = async (userId,password,email,name,phoneNumber) => {
+exports.addUser = async (userId,password,email,name,phoneNumber,transaction = undefined) => {
+    const t = transaction || undefined
+
     try {
         const user = await users.findByPk(userId)
         if(user){
@@ -16,7 +18,7 @@ exports.addUser = async (userId,password,email,name,phoneNumber) => {
             email: email,
             name: name,
             phoneNumber: phoneNumber
-        })
+        },{transaction: t})
 
         return newUser
 

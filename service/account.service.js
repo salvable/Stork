@@ -1,14 +1,16 @@
 const db = require('../models')
 const account = db["account"]
 
-exports.addAccount = async (userId) => {
+exports.addAccount = async (userId,transaction = undefined) => {
+    const t = transaction || undefined
+
     try {
         const randomString = Math.floor(Math.random() * 9999999);
         const newAccount = await account.create({
             accountId: randomString,
             money: 10000000,
             userId: userId
-        })
+        },{transaction: t})
 
         if(!newAccount){
             const err = new Error("create error")
