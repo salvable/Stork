@@ -33,3 +33,24 @@ exports.addStork  = async (userId, storkName, number,transaction = undefined) =>
         return err.name
     }
 }
+
+exports.getStork = async (userId,storkName) => {
+    try {
+        const stork = await storks.findOne({
+            where: {
+                userId: userId,
+                storkName: storkName
+            }
+        })
+
+        if(stork == null){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        return stork
+    } catch (err) {
+        return err.name
+    }
+}
