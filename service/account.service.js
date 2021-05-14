@@ -52,19 +52,7 @@ exports.addMoney = async (accountId, money) => {
             throw err
         }
 
-        const updateAccount = await Account.findOne({
-            where:{
-                accountId:accountId
-            }
-        })
-
-        if(!updateAccount){
-            const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
-            throw err
-        }
-
-        return updateAccount
+        return true
 
     } catch (err) {
         console.log(err)
@@ -92,19 +80,30 @@ exports.subMoney = async (accountId, money, transaction = undefined) => {
             throw err
         }
 
-        const updateAccount = await Account.findOne({
+        return true
+
+    } catch (err) {
+        console.log(err)
+        return err.name
+    }
+}
+
+exports.getAccount = async (userId) => {
+
+    try {
+        const account = await Account.findOne({
             where:{
-                accountId:accountId
+                userId: userId
             }
         })
 
-        if(!updateAccount){
+        if(!account){
             const err = new Error("NotFoundError")
             err.name = "NotFoundError"
             throw err
         }
 
-        return updateAccount
+        return account
 
     } catch (err) {
         console.log(err)
