@@ -18,13 +18,14 @@ exports.addStork = async (req, res, next) => {
             const account = await accountService.subMoney(userId,number,t)
 
             //Todo account에서는 number * 가격만큼 잔고에서 빼야 하고 stork에서는 산 수량만큼 업데이트를 해줘야 한다.
+            const stork = await storkService.addStork(userId, storkName, number, t)
 
-
+            return stork
         })
 
         return res.send(
             {
-                account: true
+                account: stork
             }
         )
     } catch (err) {
