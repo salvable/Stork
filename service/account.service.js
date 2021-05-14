@@ -72,15 +72,19 @@ exports.addMoney = async (accountId, money) => {
     }
 }
 
-exports.subMoney = async (accountId, money) => {
+exports.subMoney = async (accountId, money, transaction = undefined) => {
+
+    const t = transaction || undefined
+
     try {
+
         const account = await Account.update({
             money: Account.money - parseInt(money)
         },{
             where: {
                 accountId: accountId
             }
-        })
+        }, {transaction : t})
 
         if(!account){
             const err = new Error("NotFoundError")
