@@ -36,7 +36,7 @@ exports.addAccount = async (userId,transaction = undefined) => {
     }
 }
 
-exports.addMoney = async (accountId, money) => {
+exports.updateMoney = async (accountId, money) => {
     try {
         const account = await Account.update({
             money: Account.money + parseInt(money)
@@ -45,34 +45,6 @@ exports.addMoney = async (accountId, money) => {
                 accountId: accountId
             }
         })
-
-        if(!account){
-            const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
-            throw err
-        }
-
-        return true
-
-    } catch (err) {
-        console.log(err)
-        return err.name
-    }
-}
-
-exports.subMoney = async (accountId, money, transaction = undefined) => {
-
-    const t = transaction || undefined
-
-    try {
-
-        const account = await Account.update({
-            money: Account.money - parseInt(money)
-        },{
-            where: {
-                accountId: accountId
-            }
-        }, {transaction : t})
 
         if(!account){
             const err = new Error("NotFoundError")

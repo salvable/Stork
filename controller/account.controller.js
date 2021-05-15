@@ -12,7 +12,7 @@ exports.addMoney = async (req, res, next) => {
     }
 
     try {
-        const account = await accountService.addMoney(accountId,money)
+        await accountService.updateMoney(accountId,money)
 
         if(account == "NotFoundError"){
             return next(createError(404, 'NotFoundError'))
