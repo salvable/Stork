@@ -17,7 +17,8 @@ app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
     '');});
 app.post('/adduser' ,userController.addUser)
 app.get('/Login', authController.Login)
-app.post('/user/account/:accountId', accountController.addMoney)
+app.post('/user/account/:accountId', accountController.updateMoney)
+app.get('/account/:userId', accountController.getAccount)
 
 const driver = async () =>{
     try{
