@@ -32,8 +32,6 @@ exports.addStork = async (req, res, next) => {
     }
 }
 
-
-
 exports.getStork = async (req, res, next) => {
     const userId = req.params.userId
     const storkName = req.query.storkName
