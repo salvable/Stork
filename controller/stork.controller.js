@@ -31,3 +31,30 @@ exports.addStork = async (req, res, next) => {
         return res.status(500).json(err)
     }
 }
+
+
+
+exports.getStork = async (req, res, next) => {
+    const userId = req.params.userId
+    const storkName = req.query.storkName
+
+    if(!userId || !storkName ){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    try {
+        const stork = await storkService.getStork(userId, storkName)
+
+        if(!stork){
+            return next(createError(404, 'NotFoundError'))
+        }
+
+        return res.send(
+            {
+                account: stork
+            }
+        )
+    } catch (err) {
+        return res.status(500).json(err)
+    }
+}
