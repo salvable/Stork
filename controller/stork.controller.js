@@ -49,6 +49,30 @@ exports.getStork = async (req, res, next) => {
 
         return res.send(
             {
+                stork: stork
+            }
+        )
+    } catch (err) {
+        return res.status(500).json(err)
+    }
+}
+
+exports.getStorks = async (req, res, next) => {
+    const userId = req.params.userId
+
+    if(!userId){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    try {
+        const stork = await storkService.getStorks(userId)
+
+        if(!stork){
+            return next(createError(404, 'NotFoundError'))
+        }
+
+        return res.send(
+            {
                 account: stork
             }
         )
