@@ -1,6 +1,7 @@
 const userController = require('./controller/user.controller')
 const authController = require('./controller/auth.controller')
 const accountController = require('./controller/account.controller')
+const storkController = require('./controller/stork.controller')
 
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -20,6 +21,8 @@ app.get('/Login', authController.Login)
 app.post('/user/account/:accountId', accountController.updateMoney)
 app.get('/account/:userId', accountController.getAccount)
 
+app.get('/stork/:userId/:storkName', storkController.getStork)
+app.get('/account/:userId', storkController.getStorks)
 const driver = async () =>{
     try{
         await sequelize.sync({force:true});
