@@ -20,7 +20,7 @@ app.post('/adduser' ,userController.addUser)
 app.get('/Login', authController.Login)
 app.post('/user/account/:accountId', accountController.updateMoney)
 app.get('/account/:userId', accountController.getAccount)
-
+app.post('stork/:userId', storkController.addStork)
 app.get('/stork/:userId/:storkName', storkController.getStork)
 app.get('/account/:userId', storkController.getStorks)
 const driver = async () =>{
