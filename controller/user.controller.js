@@ -12,7 +12,7 @@ exports.addUser = async (req, res, next) => {
 
     try {
 
-        const {user,account} = await models.sequelize.transaction(async (t) => {
+        const {user,account,grade} = await models.sequelize.transaction(async (t) => {
             const user = await userService.addUser(userId,password,email,name,phoneNumber,t)
 
             if(user == "ValidationError"){
@@ -28,13 +28,20 @@ exports.addUser = async (req, res, next) => {
                 throw err
             }
 
-            return {user,account}
+            const grade = await gradeService.addGrade(userId,t)
+            if (grade == "Conflict"){
+                const err = new Error("Conflict")
+                err.name = "Conflict"
+                throw err
+            }
+            return {user,account,grade}
         })
 
         return res.send(
             {
                 user: user,
-                account: account
+                account: account,
+                grade: grade
             }
         )
     } catch (err) {
