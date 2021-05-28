@@ -1,7 +1,36 @@
 const userService = require('../service/user.service.js')
 const accountService = require('../service/account.service.js')
+const gradeService = require('../service/grade.service.js')
 const createError = require('http-errors')
 const models = require('../models')
+
+exports.getUser = async (req, res, next) => {
+    const userId = req.body.userId
+
+    if(!userId){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    try {
+        const user = userService.getUser(userId)
+        const grade = gradeService.getGrade(userId)
+
+        if(!user || !grade){
+            return next(createError(404, 'NotFoundError'))
+        }
+
+        return res.send(
+            {
+                user: user,
+                grade: grade
+            }
+        )
+    } catch (err) {
+        return res.send({
+            error: err.name
+        })
+    }
+}
 
 exports.addUser = async (req, res, next) => {
     const userId = req.body.userId
