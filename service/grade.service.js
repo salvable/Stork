@@ -29,3 +29,23 @@ exports.addGrade = async (userId,transaction = undefined) => {
         return err.name
     }
 }
+
+exports.getGrade = async (userId) => {
+    try {
+        const grade = await grades.findOne({
+            where: {
+                userId: userId,
+            }
+        })
+
+        if(grade == null){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        return grade
+    } catch (err) {
+        return err.name
+    }
+}
