@@ -15,7 +15,7 @@ exports.Login = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const user = await userService.getUser(id,password)
+    const user = await userService.login(id,password)
 
     if(user == "NotFoundError"){
         return next(createError(404, 'NotFoundError'))
