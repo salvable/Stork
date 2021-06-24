@@ -74,8 +74,6 @@ exports.addUser = async (req, res, next) => {
             }
         )
     } catch (err) {
-        return res.send({
-            error: err.name
-        })
+        return next(createError(500, 'Error'))
     }
 }

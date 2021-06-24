@@ -7,17 +7,16 @@ exports.addGrade = async (userId,transaction = undefined) => {
     // 초기값이기에 Common값
     try {
 
-        const ExistGrade = grades.findOne({
+        const ExistGrade = await grades.findOne({
             userId: userId
         })
-
         if(ExistGrade){
             const err = new Error("Conflict")
             err.name = "Conflict"
             throw err
         }
 
-        const grade = grades.create({
+        const grade = await grades.create({
             userId: userId,
             grade: "common"
         },{transaction: t})
