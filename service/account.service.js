@@ -6,7 +6,9 @@ exports.addAccount = async (userId,transaction = undefined) => {
 
     try {
         const account = await Account.findOne({
-            userId: userId
+            where:{
+                userId: userId
+            }
         })
 
         if(account){
@@ -16,6 +18,7 @@ exports.addAccount = async (userId,transaction = undefined) => {
         }
 
         const randomString = Math.floor(Math.random() * 9999999);
+        console.log(randomString)
         const newAccount = await Account.create({
             accountId: randomString,
             money: 10000000,

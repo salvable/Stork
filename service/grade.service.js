@@ -8,7 +8,9 @@ exports.addGrade = async (userId,transaction = undefined) => {
     try {
 
         const ExistGrade = await grades.findOne({
-            userId: userId
+            where:{
+                userId: userId
+            }
         })
         if(ExistGrade){
             const err = new Error("Conflict")
