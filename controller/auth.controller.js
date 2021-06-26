@@ -7,9 +7,8 @@ const createError = require('http-errors')
 const authService = require('../service/auth.service')
 
 exports.Login = async (req, res, next) => {
-
-    const id = req.body.id
-    const password = req.body.password
+    const id = req.query.id
+    const password = req.query.password
 
     if(!id || !password){
         return next(createError(400, 'BadRequestError'))

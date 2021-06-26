@@ -31,7 +31,7 @@ exports.login = async (userId,password) => {
     try {
         const user = await users.findOne({
             where: {
-                id: userId,
+                userid: userId,
                 password: password
             }
         })
