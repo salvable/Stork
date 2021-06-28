@@ -30,10 +30,40 @@ exports.Login = async (req, res, next) => {
             })
 }
 
+exports.checkAuth = async (req, res, next) => {
+    try {
+        req.decoded = jwt.verify(req.headers.authorization, secretObj.secret);
+        return next();
+    }
+
+    catch (error) {
+        //기간만료
+        if (error.name === 'TokenExpiredError') {
+            return res.status(419).json({
+                code: 419,
+            });
+        }
+
+        // 토큰의 비밀키 불일치
+        return res.status(401).json({
+            code: 401,
+        });
+    }
+}
+
 exports.refreshToken = async (req, res, next) => {
     try {
-        req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
-        return next();
+        req.decoded = jwt.verify(req.headers.authorization, secretObj.secret);
+
+        //Todo
+        //refreshToken이 만료되지 않았다면 해당 토큰을 디코드하여 id를 얻어와 토큰과 리프레시토큰을 재발급
+        const token = await authService.signAccessToken(req.decoded.id)
+        const refreshToken = await authService.signRefreshToken(req.decoded.id)
+        res.cookie("user", token);
+        res.json({
+            token: token,
+            refreshToken: refreshToken
+        })
     }
 
     catch (error) {
