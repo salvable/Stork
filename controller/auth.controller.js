@@ -37,14 +37,15 @@ exports.checkAuth = async (req, res, next) => {
         //token[1]은 accessToken
         if(token[0] == "Bearer"){
             const checkAuth = jwt.verify(token[1], secretObj.secret);
-
             const user = await userService.getUser(checkAuth.id)
 
             if(user == "SequelizeDatabaseError"){
                 throw new Error
             }
         }
-
+        return res.status(200).json({
+            code: 200
+        });
     }
 
     catch (error) {

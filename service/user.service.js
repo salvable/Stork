@@ -52,7 +52,7 @@ exports.getUser = async (userId) => {
     try {
         const user = await users.findOne({
             where: {
-                id: userId
+                userId: userId
             }
         })
 
