@@ -39,10 +39,12 @@ exports.checkAuth = async (req, res, next) => {
             const checkAuth = jwt.verify(token[1], secretObj.secret);
 
             const user = await userService.getUser(checkAuth.id)
-            //user 가 없으면 권한이 없으므로 401 에러출력
+
+            if(user == "SequelizeDatabaseError"){
+                throw new Error
+            }
         }
 
-        return next()
     }
 
     catch (error) {
