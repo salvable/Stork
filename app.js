@@ -13,10 +13,10 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));  // 클라이언트의 form값을 req.body에 넣음
 app.use(cors())
-const jwt = require("jsonwebtoken");
 
 app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
     '');});
+app.get('/checkAuth', authController.checkAuth)
 app.post('/adduser' ,userController.addUser)
 app.get('/Login', authController.Login)
 app.post('/user/account/:accountId', accountController.updateMoney)
