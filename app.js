@@ -2,6 +2,7 @@ const userController = require('./controller/user.controller')
 const authController = require('./controller/auth.controller')
 const accountController = require('./controller/account.controller')
 const storkController = require('./controller/stork.controller')
+const authMiddleware = require('./middleware/auth.middleware')
 
 const cors = require('cors')
 const express = require('express')
@@ -13,6 +14,8 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));  // 클라이언트의 form값을 req.body에 넣음
 app.use(cors())
+
+const checkAuth = authMiddleware.checkAuth()
 
 app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
     '');});
