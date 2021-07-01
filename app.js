@@ -2,6 +2,7 @@ const userController = require('./controller/user.controller')
 const authController = require('./controller/auth.controller')
 const accountController = require('./controller/account.controller')
 const storkController = require('./controller/stork.controller')
+const favoriteController = require('./controller/favorite.controller')
 const authMiddleware = require('./middleware/auth.middleware')
 
 const cors = require('cors')
@@ -27,6 +28,7 @@ app.get('/account/:userId', accountController.getAccount)
 app.post('stork/:userId', storkController.addStork)
 app.get('/stork/:userId/:storkName', storkController.getStork)
 app.get('/account/:userId', storkController.getStorks)
+app.post('/favorite/:userId', favoriteController.addFavorite)
 const driver = async () =>{
     try{
         await sequelize.sync({force:true});
