@@ -1,5 +1,7 @@
+require('dotenv').config();
+
 let jwtObj = {};
 
-jwtObj.secret = "test"
+jwtObj.secret = process.env.JWT_SECRET_KEY
 
 module.exports = jwtObj
