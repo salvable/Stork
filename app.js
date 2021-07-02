@@ -29,6 +29,7 @@ app.post('stork/:userId', storkController.addStork)
 app.get('/stork/:userId/:storkName', storkController.getStork)
 app.get('/account/:userId', storkController.getStorks)
 app.post('/favorite/:userId', favoriteController.addFavorite)
+app.delete('/favorite/:userId', favoriteController.removeFavorite);
 const driver = async () =>{
     try{
         await sequelize.sync({force:true});

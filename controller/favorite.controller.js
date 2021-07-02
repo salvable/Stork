@@ -24,3 +24,25 @@ exports.addFavorite = async (req, res, next) => {
         )
 
 }
+
+exports.removeFavorite = async (req, res, next) => {
+    const userId = req.params.userId
+    const favoriteId = req.query.favoriteId
+
+    if(!userId || !favoriteId){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    const result = await favoriteService.removeFavorite(favoriteId,userId)
+
+    if(result == "NotFoundError"){
+        return next(createError(404, 'NotFoundError'))
+    }
+
+    return res.send(
+        {
+            result: result
+        }
+    )
+
+}
