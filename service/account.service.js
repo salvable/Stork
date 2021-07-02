@@ -39,10 +39,10 @@ exports.addAccount = async (userId,transaction = undefined) => {
     }
 }
 
-exports.updateMoney = async (accountId, money) => {
+exports.updateMoney = async (accountId, money, price) => {
     try {
         const account = await Account.update({
-            money: Account.money + parseInt(money)
+            money: Account.money + parseInt(money) * parseInt(price)
         },{
             where: {
                 accountId: accountId
