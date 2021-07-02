@@ -9,6 +9,7 @@ exports.addStork = async (req, res, next) => {
     const storkName = req.query.storkName
     const number = req.query.number
 
+
     if(!userId || !storkName || !number){
         return next(createError(400, 'BadRequestError'))
     }
@@ -34,6 +35,8 @@ exports.addStork = async (req, res, next) => {
         return res.status(500).json(err)
     }
 }
+
+
 
 exports.getStork = async (req, res, next) => {
     const userId = req.params.userId
