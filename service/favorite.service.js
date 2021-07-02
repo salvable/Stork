@@ -60,3 +60,24 @@ exports.removeFavorite  = async (favoriteId,userId) => {
         return err.name
     }
 }
+
+exports.getFavorites  = async (userId) => {
+    try {
+        const favorites = await favorites.findAll({
+            where:{
+                userId: userId
+            }
+        })
+
+        if(!favorites){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        return favorites
+
+    } catch (err) {
+        return err.name
+    }
+}

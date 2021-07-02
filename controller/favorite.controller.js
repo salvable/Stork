@@ -46,3 +46,24 @@ exports.removeFavorite = async (req, res, next) => {
     )
 
 }
+
+exports.getFavorites = async (req, res, next) => {
+    const userId = req.params.userId
+
+    if(!userId){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    const favorites = await favoriteService.getFavorites(userId)
+
+    if(favorites == "NotFoundError"){
+        return next(createError(404, 'NotFoundError'))
+    }
+
+    return res.send(
+        {
+            favorites: favorites
+        }
+    )
+
+}
