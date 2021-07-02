@@ -39,13 +39,13 @@ exports.addAccount = async (userId,transaction = undefined) => {
     }
 }
 
-exports.updateMoney = async (accountId, money, price) => {
+exports.addMoney = async (userId , number, price, transaction = undefined) => {
+    const t = transaction || undefined
+
     try {
-        const account = await Account.update({
-            money: Account.money + parseInt(money) * parseInt(price)
-        },{
-            where: {
-                accountId: accountId
+        const account = await Account.findOne({
+            where:{
+                userId: userId
             }
         })
 
@@ -55,11 +55,56 @@ exports.updateMoney = async (accountId, money, price) => {
             throw err
         }
 
+        await Account.update({
+            money: account.money + parseInt(number) * parseInt(price)
+        },{
+            where: {
+                userId: userId
+            }
+        },{transaction:t})
+
         return true
 
     } catch (err) {
-        console.log(err)
         return err.name
+    }
+}
+
+exports.subMoney = async (userId , number, price, transaction = undefined) => {
+    const t = transaction || undefined
+
+    try {
+        const account = await Account.findOne({
+            where:{
+                userId: userId
+            }
+        })
+
+        if(!account){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        if(account.money < number * price){
+            const err = new Error("BadRequestError")
+            err.name = "BadRequestError"
+            err.code = 400
+            throw err
+        }
+
+        await Account.update({
+            money: account.money - parseInt(number) * parseInt(price)
+        },{
+            where: {
+                userId: userId
+            }
+        },{transaction:t})
+
+        return true
+
+    } catch (err) {
+        return err
     }
 }
 

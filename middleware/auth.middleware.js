@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const userService = require('../service/user.service.js')
 const secretObj = require("../config/jwt")
 const db = require('../models')
+const createError = require("http-errors");
 
 exports.checkAuth = async (req, res, next) => {
     try {
@@ -17,20 +18,16 @@ exports.checkAuth = async (req, res, next) => {
             }
         }
 
-        return next()
+        next()
     }
 
     catch (error) {
         //기간만료
         if (error.name === 'TokenExpiredError') {
-            return res.status(419).json({
-                code: 419,
-            });
+            return next(createError(419, 'TokenExpiredError'))
         }
 
         // 권한없음
-        return res.status(401).json({
-            code: 401,
-        });
+        return next(createError(401, 'Unauthorized'))
     }
 }
