@@ -14,17 +14,20 @@ exports.addStork = async (req, res, next) => {
     }
 
     try {
-        await models.sequelize.transaction(async (t) => {
-            const account = await accountService.updateMoney(userId,number,t)
+         await models.sequelize.transaction(async (t) => {
+            await accountService.updateMoney(userId,number,t)
             //Todo account에서는 number * 가격만큼 잔고에서 빼야 하고 stork에서는 산 수량만큼 업데이트 or 새로 생성을 해줘야 한다.
-            const stork = await storkService.addStork(userId, storkName, number, t)
+            //Todo updateMoney를 하기위해 해당 종목의 가격도 받아와야 함
+            await storkService.addStork(userId, storkName, number, t)
         })
 
-        const updateStork = await storkService.getStork(userId,storkName)
+        const account = await accountService.getAccount(userId)
+        const stork = await storkService.getStork(userId,storkName)
 
         return res.send(
             {
-                account: updateStork
+                account: account,
+                stork: stork
             }
         )
     } catch (err) {
