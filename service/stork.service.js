@@ -37,6 +37,44 @@ exports.addStork  = async (userId, storkName, number, transaction = undefined) =
     }
 }
 
+exports.subStork  = async (userId, storkName, number, transaction = undefined) => {
+    const t = transaction || undefined
+
+    try {
+        const stork = await storks.findOne({
+            where:{
+                userId: userId
+            }
+        })
+        // 해당 주식을 보유중이지 않다면 에러
+        if(!stork){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        if(number > stork.storkCount){
+            const err = new Error("BadRequestError")
+            err.name = "BadRequestError"
+            throw err
+        }
+
+        await storks.update({
+                storkCount: parseInt(stork.storkCount) - parseInt(number)
+            },{
+                where:{
+                    userId: userId,
+                    storkName: storkName
+                }
+            },{transaction: t}
+        )
+        return true
+
+    } catch (err) {
+        return err.name
+    }
+}
+
 exports.getStork = async (userId,storkName) => {
     try {
         const stork = await storks.findOne({
