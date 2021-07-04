@@ -1,5 +1,6 @@
 const db = require('../models')
 const grades = db["grade"]
+const account = db["account"]
 
 exports.addGrade = async (userId,transaction = undefined) => {
     const t = transaction || undefined
@@ -46,6 +47,38 @@ exports.getGrade = async (userId) => {
         }
 
         return grade
+    } catch (err) {
+        return err.name
+    }
+}
+
+exports.setGrade = async (userId) => {
+    try {
+        const account = await account.findOne({
+            where: {
+                userId: userId,
+            }
+        })
+
+        if(account == null){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+
+        //Todo 추후생각
+        if(account.money >= 1000000000){
+            await grades.update({
+                grade: "Master"
+            },{
+                where: {
+                    userId: userId
+                }
+            })
+        }
+
+        return true
     } catch (err) {
         return err.name
     }
