@@ -67,7 +67,7 @@ exports.setGrade = async (userId) => {
         }
 
 
-        //Todo 추후생각
+        //Todo 추후생각  opthion에 따라 등급을 나누자.
         if(account.money >= 1000000000){
             await grades.update({
                 grade: "Master"
