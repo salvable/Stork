@@ -7,8 +7,8 @@ exports.addUser = async (userId,password,email,name,phoneNumber,transaction = un
     try {
         const user = await users.findByPk(userId)
         if(user){
-            const err = new Error("ValidationError")
-            err.name = "ValidationError"
+            const err = new Error("Conflict")
+            err.name = "Conflict"
             throw err
         }
 
