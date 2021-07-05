@@ -15,6 +15,9 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));  // 클라이언트의 form값을 req.body에 넣음
 app.use(cors())
+app.use(function(err, req, res, next) {
+    res.status(500).send('Something broke!');
+});
 
 const checkAuth = authMiddleware.checkAuth()
 
