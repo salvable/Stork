@@ -22,6 +22,7 @@ app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
     '');});
 app.get('/checkAuth', authController.checkAuth)
 app.post('/adduser' ,userController.addUser)
+app.get('/getUser/:userId', userController.getUser)
 app.get('/Login', authController.Login)
 app.post('/user/account/:accountId', accountController.updateMoney)
 app.get('/account/:userId', accountController.getAccount)

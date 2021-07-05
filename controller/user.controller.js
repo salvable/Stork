@@ -5,31 +5,26 @@ const createError = require('http-errors')
 const models = require('../models')
 
 exports.getUser = async (req, res, next) => {
-    const userId = req.body.userId
+    const userId = req.params.userId
+
+    console.log(userId)
 
     if(!userId){
-        return next(createError(400, 'BadRequestError'))
+        return res.status(400).send("BadRequestError")
     }
 
-    try {
-        const user = userService.getUser(userId)
-        const grade = gradeService.getGrade(userId)
+    const user = await userService.getUser(userId)
+    const grade = await gradeService.getGrade(userId)
 
-        if(!user || !grade){
-            return next(createError(404, 'NotFoundError'))
-        }
+    if(!user || !grade){
+        return res.status(404).send("NotFoundError")
+    }
 
-        return res.send(
-            {
+    return res.send(
+        {
                 user: user,
                 grade: grade
-            }
-        )
-    } catch (err) {
-        return res.send({
-            error: err.name
         })
-    }
 }
 
 exports.addUser = async (req, res, next) => {
@@ -39,14 +34,18 @@ exports.addUser = async (req, res, next) => {
     const name = req.body.name
     const phoneNumber = req.body.phoneNumber
 
-    try {
+    if(!userId || !password || !email || !name || !phoneNumber){
+        return res.status(400).send("BadRequestError")
+    }
 
+
+    try {
         const {user,account,grade} = await models.sequelize.transaction(async (t) => {
             const user = await userService.addUser(userId,password,email,name,phoneNumber,t)
 
-            if(user == "ValidationError"){
-                const err = new Error("ValidationError")
-                err.name = "ValidationError"
+            if(user == "Conflict"){
+                const err = new Error("Conflict")
+                err.name = "Conflict"
                 throw err
             }
 
@@ -74,6 +73,13 @@ exports.addUser = async (req, res, next) => {
             }
         )
     } catch (err) {
-        return next(createError(500, 'Error'))
+        switch(err.name){
+            case "Conflict":
+                return next(createError(409, 'Conflict'))
+            case "Bad request":
+                return next(createError(400, 'Bad request'))
+            default:
+                return next(createError(500, 'Error'))
+        }
     }
 }
