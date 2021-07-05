@@ -34,7 +34,6 @@ exports.addAccount = async (userId,transaction = undefined) => {
         return newAccount
 
     } catch (err) {
-        console.log(err)
         return err.name
     }
 }

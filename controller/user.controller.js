@@ -7,17 +7,15 @@ const models = require('../models')
 exports.getUser = async (req, res, next) => {
     const userId = req.params.userId
 
-    console.log(userId)
-
     if(!userId){
-        return res.status(400).send("BadRequestError")
+        return next(createError(400, 'Bad request'))
     }
 
     const user = await userService.getUser(userId)
     const grade = await gradeService.getGrade(userId)
 
     if(!user || !grade){
-        return res.status(404).send("NotFoundError")
+        return next(createError(404, 'NotFoundError'))
     }
 
     return res.send(
@@ -35,7 +33,7 @@ exports.addUser = async (req, res, next) => {
     const phoneNumber = req.body.phoneNumber
 
     if(!userId || !password || !email || !name || !phoneNumber){
-        return res.status(400).send("BadRequestError")
+        return next(createError(400, 'Bad request'))
     }
 
 

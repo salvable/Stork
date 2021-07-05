@@ -17,9 +17,18 @@ exports.addStork = async (req, res, next) => {
     try {
          await models.sequelize.transaction(async (t) => {
             const account = await accountService.subMoney(userId,number,price,t)
-             console.log(account)
+            if(account == "NotFoundError" || account == "BadRequestError"){
+                const err = new Error(account)
+                err.name = account
+                throw err
+            }
 
             const stork = await storkService.addStork(userId, storkName, number, t)
+             if(stork == "NotFoundError" || stork == "BadRequestError"){
+                 const err = new Error(stork)
+                 err.name = stork
+                 throw err
+             }
         })
 
         const account = await accountService.getAccount(userId)
@@ -32,7 +41,15 @@ exports.addStork = async (req, res, next) => {
             }
         )
     } catch (err) {
-        return res.status(500).json(err)
+        switch(err.name){
+            case "NotFoundError":
+                return next(createError(400, 'NotFoundError'))
+            case "BadRequestError":
+                return next(createError(404, 'BadRequestError'))
+            default:
+                return res.status(500).json(err)
+
+        }
     }
 }
 
@@ -48,8 +65,19 @@ exports.subStork = async (req, res, next) => {
 
     try {
         await models.sequelize.transaction(async (t) => {
-            await accountService.addMoney(userId,number,price,t)
-            await storkService.subStork(userId, storkName, number, t)
+            const account = await accountService.addMoney(userId,number,price,t)
+            if(account == "NotFoundError" || account == "BadRequestError"){
+                const err = new Error(account)
+                err.name = account
+                throw err
+            }
+
+            const stork = await storkService.subStork(userId, storkName, number, t)
+            if(stork == "NotFoundError" || stork == "BadRequestError"){
+                const err = new Error(stork)
+                err.name = stork
+                throw err
+            }
         })
 
         const account = await accountService.getAccount(userId)
@@ -62,7 +90,15 @@ exports.subStork = async (req, res, next) => {
             }
         )
     } catch (err) {
-        return res.status(500).json(err)
+        switch(err.name){
+            case "NotFoundError":
+                return next(createError(400, 'NotFoundError'))
+            case "BadRequestError":
+                return next(createError(404, 'BadRequestError'))
+            default:
+                return res.status(500).json(err)
+
+        }
     }
 }
 
