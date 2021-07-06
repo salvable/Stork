@@ -5,29 +5,40 @@ const db = require('../models')
 const users = db["users"]
 const createError = require('http-errors')
 const authService = require('../service/auth.service')
+const passport = require('passport');
 
 exports.Login = async (req, res, next) => {
-    const id = req.query.id
-    const password = req.query.password
 
-    if(!id || !password){
-        return next(createError(400, 'BadRequestError'))
+    try {
+        // 아까 local로 등록한 인증과정 실행
+        passport.authenticate('local', (passportError, user, info) => {
+            // 인증이 실패했거나 유저 데이터가 없다면 에러 발생
+            if (passportError || !user) {
+                console.log(user, passportError, info)
+                res.status(400).json({ message: info.reason });
+                return;
+            }
+
+            // user데이터를 통해 로그인 진행
+            req.login(user, { session: false }, (loginError) => {
+                if (loginError) {
+                    res.send(loginError);
+                    return;
+                }
+
+                // 클라이언트에게 JWT생성 후 반환
+                const token = jwt.sign({id: user.userId}, secretObj.secret, {expiresIn: '30m'})
+                const refreshToken = jwt.sign({id: user.userId}, secretObj.secret, {expiresIn: '7d'})
+                res.json({
+                    token: token,
+                    refreshToken: refreshToken
+                });
+            });
+        })(req, res);
+    } catch (error) {
+        console.error(error);
+        next(error);
     }
-
-    const user = await userService.login(id,password)
-
-    if(user == "NotFoundError"){
-        return next(createError(404, 'NotFoundError'))
-    }
-
-    const token = await authService.signAccessToken(id)
-    const refreshToken = await authService.signRefreshToken(id)
-
-    res.cookie("user", token);
-            res.json({
-                token: token,
-                refreshToken: refreshToken
-            })
 }
 
 exports.checkAuth = async (req, res, next) => {

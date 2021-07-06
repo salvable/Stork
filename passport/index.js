@@ -9,7 +9,7 @@ const passportConfig = { usernameField: 'userId', passwordField: 'password' };
 const passportVerify = async (userId, password, done) => {
     try {
         // 유저 아이디로 일치하는 유저 데이터 검색
-        const user = await User.findOne({ where: { user_id: userId } });
+        const user = await User.findOne({ where: { userId: userId } });
         // 검색된 유저 데이터가 없다면 에러 표시
         if (!user) {
             done(null, false, { reason: '존재하지 않는 사용자 입니다.' });
