@@ -1,8 +1,10 @@
 const db = require('../models')
+const bcrypt = require("bcrypt");
 const users = db["user"]
 
 exports.addUser = async (userId,password,email,name,phoneNumber,transaction = undefined) => {
     const t = transaction || undefined
+    const hash_password = await bcrypt.hash(password, 10)
 
     try {
         const user = await users.findByPk(userId)
@@ -14,7 +16,7 @@ exports.addUser = async (userId,password,email,name,phoneNumber,transaction = un
 
         const newUser = await users.create({
             userId: userId,
-            password: password,
+            password: hash_password,
             email: email,
             name: name,
             phoneNumber: phoneNumber
