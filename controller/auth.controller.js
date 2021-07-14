@@ -53,9 +53,14 @@ exports.checkAuth = async (req, res, next) => {
             if(user == "SequelizeDatabaseError"){
                 throw new Error
             }
+
+            return res.status(200).json({
+                userId: checkAuth.id
+            });
         }
+
         return res.status(200).json({
-            code: 200
+            response: true
         });
     }
 
