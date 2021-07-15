@@ -28,6 +28,7 @@ const checkAuth = authMiddleware.checkAuth()
 app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
     '');});
 app.get('/checkAuth', authController.checkAuth)
+app.get('/refreshToken', authController.refreshToken)
 app.post('/adduser' ,userController.addUser)
 app.get('/getUser/:userId', userController.getUser)
 app.post('/Login', authController.Login)
@@ -42,7 +43,7 @@ app.get('/favorites/:userId', favoriteController.getFavorites)
 
 const driver = async () =>{
     try{
-        await sequelize.sync({force:true});
+        await sequelize.sync({force:false});
     } catch (err) {
         console.log(err)
         console.log("init Fail");

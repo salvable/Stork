@@ -87,7 +87,7 @@ exports.refreshToken = async (req, res, next) => {
         //refreshToken이 만료되지 않았다면 해당 토큰을 디코드하여 id를 얻어와 토큰과 리프레시토큰을 재발급
         const token = await authService.signAccessToken(req.decoded.id)
         const refreshToken = await authService.signRefreshToken(req.decoded.id)
-        res.cookie("user", token);
+
         res.json({
             token: token,
             refreshToken: refreshToken
