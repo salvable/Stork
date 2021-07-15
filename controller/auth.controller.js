@@ -81,17 +81,28 @@ exports.checkAuth = async (req, res, next) => {
 
 exports.refreshToken = async (req, res, next) => {
     try {
-        req.decoded = jwt.verify(req.headers.authorization, secretObj.secret);
+        const refresh = req.headers.authorization.split(" ")
+        //token[0]는 방식, basic or bearer
+        //token[1]은 accessToken
+        if(refresh[0] == "Bearer"){
+            const checkAuth = jwt.verify(refresh[1], secretObj.secret);
+            const user = await userService.getUser(checkAuth.id)
+            const token = await authService.signAccessToken(checkAuth.id)
+            const refreshToken = await authService.signRefreshToken(checkAuth.id)
+            if(user == "SequelizeDatabaseError"){
+                throw new Error
+            }
 
-        //Todo
-        //refreshToken이 만료되지 않았다면 해당 토큰을 디코드하여 id를 얻어와 토큰과 리프레시토큰을 재발급
-        const token = await authService.signAccessToken(req.decoded.id)
-        const refreshToken = await authService.signRefreshToken(req.decoded.id)
+            return res.status(200).json({
+                userId: checkAuth.id,
+                token: token,
+                refreshToken: refreshToken
+            });
+        }
 
-        res.json({
-            token: token,
-            refreshToken: refreshToken
-        })
+        return res.status(200).json({
+            response: true
+        });
     }
 
     catch (error) {
