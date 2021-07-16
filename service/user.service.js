@@ -67,11 +67,17 @@ exports.deleteUser = async (userId,password) => {
 
         //비밀번호가 같다면
         if(compareResult){
-            await users.destroy({
+             const result = await users.destroy({
                 where: {
                     userId: userId
                 }
             })
+
+            if(result == "SequelizeForeignKeyConstraintError"){
+                const err = new Error("SequelizeForeignKeyConstraintError")
+                err.name = "SequelizeForeignKeyConstraintError"
+                throw err
+            }
         }
 
         return true

@@ -91,16 +91,16 @@ exports.deleteUser = async (req, res, next) => {
     }
 
     try {
-            const user = await userService.deleteUser(userId,password)
-            if(user == "NotFoundError"){
-                const err = new Error("NotFoundError")
-                err.name = "NotFoundError"
+            const result = await userService.deleteUser(userId,password)
+            if(result == "NotFoundError" || result == "SequelizeForeignKeyConstraintError"){
+                const err = new Error(result)
+                err.name = result
                 throw err
             }
 
         return res.send(
             {
-                result: true
+                result: result
             }
         )
     } catch (err) {
