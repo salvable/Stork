@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
     grade.associate = function (models) {
-        grade.belongsTo(models.user,{foreignKey: "userId"});
+        grade.belongsTo(models.user,{foreignKey: "userId", onDelete: 'cascade'});
     };
     return grade;
 };

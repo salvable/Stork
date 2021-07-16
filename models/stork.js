@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
 
     });
     stork.associate = function (models) {
-        stork.belongsTo(models.user,{foreignKey: "userId"});
+        stork.belongsTo(models.user,{foreignKey: "userId", onDelete: 'CASCADE'});
     };
     return stork;
 };

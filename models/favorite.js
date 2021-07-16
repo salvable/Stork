@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         },
     });
     favorite.associate = function (models) {
-        favorite.belongsTo(models.user,{foreignKey: "userId"});
+        favorite.belongsTo(models.user,{foreignKey: "userId", onDelete: 'CASCADE'});
     };
     return favorite;
 };
