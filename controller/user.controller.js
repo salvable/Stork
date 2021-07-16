@@ -81,3 +81,34 @@ exports.addUser = async (req, res, next) => {
         }
     }
 }
+
+exports.deleteUser = async (req, res, next) => {
+    const userId = req.body.userId
+    const password = req.body.password
+
+    if(!userId || !password){
+        return next(createError(400, 'Bad request'))
+    }
+
+    try {
+            const user = await userService.deleteUser(userId,password)
+            if(user == "NotFoundError"){
+                const err = new Error("NotFoundError")
+                err.name = "NotFoundError"
+                throw err
+            }
+
+        return res.send(
+            {
+                result: true
+            }
+        )
+    } catch (err) {
+        switch(err.name){
+            case "Bad NotFoundError":
+                return next(createError(404, 'Bad NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
+}

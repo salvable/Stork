@@ -48,3 +48,34 @@ exports.getUser = async (userId) => {
         return err.name
     }
 }
+
+exports.deleteUser = async (userId,password) => {
+    try {
+        const user = await users.findOne({
+            where: {
+                userId: userId
+            }
+        })
+
+        if(!user){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        const compareResult = await bcrypt.compare(password, user.password);
+
+        //비밀번호가 같다면
+        if(compareResult){
+            await users.destroy({
+                where: {
+                    userId: userId
+                }
+            })
+        }
+
+        return true
+    } catch (err) {
+        return err.name
+    }
+}
