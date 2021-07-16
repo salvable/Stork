@@ -11,11 +11,11 @@ module.exports = (sequelize, DataTypes) => {
         },
         userId: {
             type: DataTypes.STRING(20),
-            allowNull:false
+            allowNull:false,
         },
     });
     account.associate = function (models) {
-        account.belongsTo(models.user,{foreignKey: "userId"});
+        account.belongsTo(models.user,{foreignKey: "userId", onDelete: 'CASCADE'});
     };
     return account;
 };
