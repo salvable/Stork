@@ -25,21 +25,25 @@ exports.getAccount = async (req, res, next) => {
     }
 }
 
-exports.updateMoney = async (req, res, next) => {
+exports.addMoney = async (req, res, next) => {
     const accountId = req.params.accountId
     const userId = req.query.userId
     const money = req.query.money
 
 
     if(!accountId || !money){
-        return next(createError(400, 'BadRequestError'))
+        const err = new Error('BadRequestError')
+        err.name = 'BadRequestError'
+        throw err
     }
 
     try {
-        await accountService.updateMoney(accountId,money)
+        const account =await accountService.addMoney(accountId,money)
 
-        if(account == "NotFoundError"){
-            return next(createError(404, 'NotFoundError'))
+        if(account == 'NotFoundError'){
+            const err = new Error(account)
+            err.name = account
+            throw err
         }
 
         const updateAccount = await accountService.getAccount(userId)
@@ -50,6 +54,13 @@ exports.updateMoney = async (req, res, next) => {
             }
         )
     } catch (err) {
-        return res.status(500).json(err)
+        switch(err.name){
+            case "Bad request":
+                return next(createError(400, 'Bad request'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
     }
 }
