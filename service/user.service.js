@@ -49,6 +49,24 @@ exports.getUser = async (userId) => {
     }
 }
 
+exports.updateUser = async (password,email,name,phoneNumber,transaction = undefined) => {
+    const t = transaction || undefined
+
+    try {
+        const updateUser = await users.update({
+            password: password,
+            email: email,
+            name: name,
+            phoneNumber: phoneNumber
+        },{transaction: t})
+
+        return updateUser
+
+    } catch (err) {
+        return err.name
+    }
+}
+
 exports.deleteUser = async (userId,password) => {
     try {
         const user = await users.findOne({

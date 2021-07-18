@@ -82,6 +82,56 @@ exports.addUser = async (req, res, next) => {
     }
 }
 
+exports.updateUser = async (req, res, next) => {
+    const password = req.body.password
+    const email = req.body.email
+    const name = req.body.name
+    const phoneNumber = req.body.phoneNumber
+    const userId = req.params.userId
+
+    if(!userId || !password || !email || !name || !phoneNumber){
+        return next(createError(400, 'Bad request'))
+    }
+
+    const isExistUser = await userService.getUser(userId)
+
+    if(isExistUser == "NotFoundError"){
+        return next(createError(404, 'NotFoundError'))
+    }
+
+    try {
+
+        const user = await models.sequelize.transaction(async (t) => {
+            const user = await userService.updateUser(userId,password,email,name,phoneNumber,t)
+
+            if(user == "Conflict"){
+                const err = new Error("Conflict")
+                err.name = "Conflict"
+                throw err
+            }
+
+            return user
+        })
+
+        return res.send(
+            {
+                user: user,
+                account: account,
+                grade: grade
+            }
+        )
+    } catch (err) {
+        switch(err.name){
+            case "Conflict":
+                return next(createError(409, 'Conflict'))
+            case "Bad request":
+                return next(createError(400, 'Bad request'))
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
+}
+
 exports.deleteUser = async (req, res, next) => {
     const userId = req.body.userId
     const password = req.body.password
