@@ -46,7 +46,7 @@ app.get('/favorites/:userId', favoriteController.getFavorites)
 
 const driver = async () =>{
     try{
-        await sequelize.sync({force:true});
+        await sequelize.sync({force:false});
     } catch (err) {
         console.log(err)
         console.log("init Fail");
