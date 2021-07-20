@@ -23,8 +23,6 @@ app.use(function(err, req, res, next) {
     res.status(500).send('Something broke!');
 });
 
-const checkAuth = authMiddleware.checkAuth()
-
 app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
     '');});
 app.get('/checkAuth', authController.checkAuth)
