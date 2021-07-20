@@ -12,16 +12,14 @@ exports.getUser = async (req, res, next) => {
     }
 
     const user = await userService.getUser(userId)
-    const grade = await gradeService.getGrade(userId)
 
-    if(!user || !grade){
+    if(!user){
         return next(createError(404, 'NotFoundError'))
     }
 
     return res.send(
         {
-                user: user,
-                grade: grade
+                user: user
         })
 }
 
@@ -116,8 +114,7 @@ exports.updateUser = async (req, res, next) => {
         return res.send(
             {
                 user: user,
-                account: account,
-                grade: grade
+
             }
         )
     } catch (err) {
