@@ -47,8 +47,8 @@ exports.checkUser = async (req, res, next) => {
 
     } catch (err) {
         switch(err.name){
-            case "Bad request":
-                return next(createError(400, 'Bad request'))
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
             case "NotFoundError":
                 return next(createError(404, 'NotFoundError'))
             default:
