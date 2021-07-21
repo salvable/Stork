@@ -23,6 +23,40 @@ exports.getUser = async (req, res, next) => {
         })
 }
 
+exports.checkUser = async (req, res, next) => {
+    const userId = req.params.userId
+    const password = req.query.password
+
+    if(!userId || !password) {
+        return next(createError(400, 'Bad request'))
+    }
+
+    try{
+        const user = await userService.checkUser(userId,password)
+
+        if(user == "NotFoundError" || user == "BadRequestError"){
+            const err = new Error(user)
+            err.name = user
+            throw err
+        }
+
+    return res.send(
+        {
+            result: user
+        })
+
+    } catch (err) {
+        switch(err.name){
+            case "Bad request":
+                return next(createError(400, 'Bad request'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
+}
+
 exports.addUser = async (req, res, next) => {
     const userId = req.body.userId
     const password = req.body.password

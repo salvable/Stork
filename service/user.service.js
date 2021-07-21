@@ -49,6 +49,34 @@ exports.getUser = async (userId) => {
     }
 }
 
+exports.checkUser = async (userId,password) => {
+    try {
+        const user = await users.findOne({
+            where: {
+                userId: userId
+            }
+        })
+
+        if(user == null){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        const compareResult = await bcrypt.compare(password, user.password);
+
+        if(!compareResult){
+            const err = new Error("BadRequestError")
+            err.name = "BadRequestError"
+            throw err
+        }
+
+        return true
+    } catch (err) {
+        return err.name
+    }
+}
+
 exports.updateUser = async (password,email,name,phoneNumber,transaction = undefined) => {
     const t = transaction || undefined
 
