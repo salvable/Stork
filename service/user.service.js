@@ -77,18 +77,22 @@ exports.checkUser = async (userId,password) => {
     }
 }
 
-exports.updateUser = async (password,email,name,phoneNumber,transaction = undefined) => {
+exports.updateUser = async (userId,password,email,name,phoneNumber,transaction = undefined) => {
     const t = transaction || undefined
+    const hash_password = await bcrypt.hash(password, 10)
 
     try {
         const updateUser = await users.update({
-            password: password,
+            password: hash_password,
             email: email,
             name: name,
             phoneNumber: phoneNumber
-        },{transaction: t})
+        },{
+            where:{
+                userId: userId
+            }}, {transaction: t})
 
-        return updateUser
+        return true
 
     } catch (err) {
         return err.name
