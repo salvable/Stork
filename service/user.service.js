@@ -99,7 +99,7 @@ exports.updateUser = async (userId,password,email,name,phoneNumber,transaction =
     }
 }
 
-exports.deleteUser = async (userId,password) => {
+exports.deleteUser = async (userId) => {
     try {
         const user = await users.findOne({
             where: {
@@ -113,10 +113,7 @@ exports.deleteUser = async (userId,password) => {
             throw err
         }
 
-        const compareResult = await bcrypt.compare(password, user.password);
-
         //비밀번호가 같다면
-        if(compareResult){
              const result = await users.destroy({
                 where: {
                     userId: userId
@@ -128,7 +125,6 @@ exports.deleteUser = async (userId,password) => {
                 err.name = "SequelizeForeignKeyConstraintError"
                 throw err
             }
-        }
 
         return true
     } catch (err) {

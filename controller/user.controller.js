@@ -164,15 +164,14 @@ exports.updateUser = async (req, res, next) => {
 }
 
 exports.deleteUser = async (req, res, next) => {
-    const userId = req.body.userId
-    const password = req.body.password
+    const userId = req.params.userId
 
-    if(!userId || !password){
+    if(!userId){
         return next(createError(400, 'Bad request'))
     }
 
     try {
-            const result = await userService.deleteUser(userId,password)
+            const result = await userService.deleteUser(userId)
             if(result == "NotFoundError" || result == "SequelizeForeignKeyConstraintError"){
                 const err = new Error(result)
                 err.name = result
