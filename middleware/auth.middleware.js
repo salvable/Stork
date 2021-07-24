@@ -1,7 +1,6 @@
 const jwt = require("jsonwebtoken");
 const userService = require('../service/user.service.js')
 const secretObj = require("../config/jwt")
-const db = require('../models')
 const createError = require("http-errors");
 
 exports.checkAuth = async (req, res, next) => {

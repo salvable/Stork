@@ -115,11 +115,11 @@ exports.addUser = async (req, res, next) => {
 }
 
 exports.updateUser = async (req, res, next) => {
+    const userId = req.params.userId
     const password = req.body.password
     const email = req.body.email
     const name = req.body.name
     const phoneNumber = req.body.phoneNumber
-    const userId = req.params.userId
 
     if(!userId || !password || !email || !name || !phoneNumber){
         return next(createError(400, 'Bad request'))

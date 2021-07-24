@@ -1,6 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
     const favorite = sequelize.define('favorite', {
-        // stork의 코드나 bit의 코드
         favoriteId: {
             type: DataTypes.STRING(20),
             allowNull:false,
