@@ -29,6 +29,7 @@ app.use(function(err, req, res, next) {
     res.status(500).send('Something broke!');
 });
 
+
 app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
     '');});
 app.get('/checkAuth', authController.checkAuth)
@@ -36,19 +37,19 @@ app.get('/refreshToken', authController.refreshToken)
 app.post('/Login', authController.Login)
 app.post('/adduser' ,userController.addUser)
 app.get('/getUser/:userId',authMiddleware.checkAuth, userController.getUser)
-app.get('/checkUser/:userId',  userController.checkUser)
-app.delete('/deleteUser/:userId', userController.deleteUser)
-app.put('/updateUser/:userId', userController.updateUser)
-app.put('/user/account/addMoney/:accountId', accountController.addMoney)
-app.put('/user/account/subMoney/:accountId', accountController.subMoney)
-app.get('/account/:userId', accountController.getAccount)
-app.post('/stork/addStork/:userId', storkController.addStork)
-app.post('/stork/subStork/:userId', storkController.subStork)
-app.get('/stork/:userId/:storkName', storkController.getStork)
-app.get('/account/:userId', storkController.getStorks)
-app.post('/favorite/:userId', favoriteController.addFavorite)
-app.delete('/favorite/:userId', favoriteController.removeFavorite)
-app.get('/favorites/:userId', favoriteController.getFavorites)
+app.get('/checkUser/:userId',authMiddleware.checkAuth,  userController.checkUser)
+app.delete('/deleteUser/:userId',authMiddleware.checkAuth, userController.deleteUser)
+app.put('/updateUser/:userId',authMiddleware.checkAuth, userController.updateUser)
+app.put('/user/account/addMoney/:accountId',authMiddleware.checkAuth, accountController.addMoney)
+app.put('/user/account/subMoney/:accountId',authMiddleware.checkAuth, accountController.subMoney)
+app.get('/account/:userId',authMiddleware.checkAuth, accountController.getAccount)
+app.post('/stork/addStork/:userId',authMiddleware.checkAuth, storkController.addStork)
+app.post('/stork/subStork/:userId',authMiddleware.checkAuth, storkController.subStork)
+app.get('/stork/:userId/:storkName',authMiddleware.checkAuth, storkController.getStork)
+app.get('/account/:userId',authMiddleware.checkAuth, storkController.getStorks)
+app.post('/favorite/:userId',authMiddleware.checkAuth, favoriteController.addFavorite)
+app.delete('/favorite/:userId',authMiddleware.checkAuth, favoriteController.removeFavorite)
+app.get('/favorites/:userId',authMiddleware.checkAuth, favoriteController.getFavorites)
 
 const driver = async () =>{
     try{
