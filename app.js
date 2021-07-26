@@ -1,4 +1,5 @@
-
+const db = require('./models')
+const User = db["user"]
 
 const userController = require('./controller/user.controller')
 const authController = require('./controller/auth.controller')
@@ -13,7 +14,6 @@ const cors = require('cors')
 const express = require('express')
 const bodyParser = require('body-parser')
 const session = require("express-session");
-const secretObj = require("./config/jwt");
 const sequelize = require('./models').sequelize;
 const app = express()
 const port = 3000;
@@ -21,12 +21,24 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));  // 클라이언트의 form값을 req.body에 넣음
 app.use(cors())
-app.use(session({ secret: secretObj.secret }));
+app.use(session({ secret: 'keyboard cat' }));
 app.use(passport.initialize());
 app.use(passport.session());
 passportConfig();
 app.use(function(err, req, res, next) {
     res.status(500).send('Something broke!');
+});
+
+passport.serializeUser((user, done) => {
+    done(null, user.userId);
+    //session에 user.id 저장
+});
+//사용자가 페이지를 조회할 때마다 식별자로 사용자 확인
+
+passport.deserializeUser(function(userid, done) {
+    User.findById(userid, function(err, user) {
+        done(err, user);
+    });
 });
 
 

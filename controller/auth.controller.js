@@ -17,7 +17,7 @@ exports.Login = async (req, res, next) => {
             }
 
             // user데이터를 통해 로그인 진행
-            req.login(user, { session: false }, (loginError) => {
+            req.login(user, { session: true }, (loginError) => {
                 if (loginError) {
                     res.send(loginError);
                     return;
