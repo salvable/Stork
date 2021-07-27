@@ -20,8 +20,17 @@ const port = 3000;
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));  // 클라이언트의 form값을 req.body에 넣음
-app.use(cors())
-app.use(session({ secret: 'keyboard cat' }));
+app.use(cors({origin: ["http://localhost:3001"], credentials:true}))
+app.use(require('express-session')({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie:{
+        maxAge:30000,
+        secure:false,
+        httpOnly:false
+    }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 passportConfig();
@@ -30,16 +39,20 @@ app.use(function(err, req, res, next) {
 });
 
 passport.serializeUser((user, done) => {
+    console.log('serializeUser() 호출됨.');
+    console.dir(user);
     done(null, user.userId);
     //session에 user.id 저장
 });
 //사용자가 페이지를 조회할 때마다 식별자로 사용자 확인
 
-passport.deserializeUser(function(userid, done) {
-    User.findById(userid, function(err, user) {
-        done(err, user);
-    });
-});
+passport.deserializeUser((userId, done) =>{
+    console.log("#######")
+    User.findOne({ where: { userId: userId }})
+        .then(user => done((null, user.userId)))
+        .catch(err => done(err));
+})
+
 
 
 app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +

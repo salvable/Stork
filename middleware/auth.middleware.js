@@ -5,7 +5,7 @@ const createError = require("http-errors");
 
 exports.checkAuth = async (req, res, next) => {
     try {
-        console.log(req.userId)
+        console.log("req: " + req.userId)
 
         next()
     }
