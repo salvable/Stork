@@ -47,9 +47,8 @@ passport.serializeUser((user, done) => {
 //사용자가 페이지를 조회할 때마다 식별자로 사용자 확인
 
 passport.deserializeUser((userId, done) =>{
-    console.log("#######")
     User.findOne({ where: { userId: userId }})
-        .then(user => done((null, user.userId)))
+        .then(user => done((null, user)))
         .catch(err => done(err));
 })
 
