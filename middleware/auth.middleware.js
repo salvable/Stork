@@ -22,6 +22,15 @@ exports.checkAuth = async (req, res, next) => {
 
     catch (error) {
         // 권한없음
-        return next(createError(500, 'Internal Server Error'))
+        if (error.name === 'TokenExpiredError') {
+            return res.status(419).json({
+                code: 419,
+            });
+        }
+
+        // 토큰의 비밀키 불일치
+        return res.status(401).json({
+            code: 401,
+        });
     }
 }
