@@ -7,9 +7,11 @@ const accountController = require('./controller/account.controller')
 const storkController = require('./controller/stork.controller')
 const favoriteController = require('./controller/favorite.controller')
 const authMiddleware = require('./middleware/auth.middleware')
+
+
 const passport = require('passport');
 const passportConfig = require('./passport');
-
+const cookieParser = require('cookie-parser');
 const cors = require('cors')
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -20,10 +22,19 @@ const port = 3000;
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));  // 클라이언트의 form값을 req.body에 넣음
-app.use(cors({origin: ["http://localhost:3001"], credentials:true}))
+app.use(cors({
+        origin: [
+            "http://localhost:3001",
+        ],
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
+        credentials: true,
+    })
+);
 app.use(require('express-session')({
     secret: 'keyboard cat',
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie:{
         maxAge:30000,
@@ -40,17 +51,30 @@ app.use(function(err, req, res, next) {
 
 passport.serializeUser((user, done) => {
     console.log('serializeUser() 호출됨.');
-    console.dir(user);
     done(null, user.userId);
-    //session에 user.id 저장
+    //session에 user.userId 저장
 });
 //사용자가 페이지를 조회할 때마다 식별자로 사용자 확인
 
-passport.deserializeUser((userId, done) =>{
-    User.findOne({ where: { userId: userId }})
-        .then(user => done((null, user)))
-        .catch(err => done(err));
-})
+passport.deserializeUser((userId, done) => { // 매개변수 id는 req.session.passport.user에 저장된 값
+    User.findById(userId, (err, user) => {
+        console.log("#####")
+        done(null, user); // 여기의 user가 req.user가 됨
+
+    });
+});
+
+// passport.deserializeUser((userId, done) =>{
+//     try{
+//         console.log(userId)
+//         const user = User.findOne({ where: { userId: userId }})
+//         console.log("#####")
+//         console.log(user)
+//         done((null, user))
+//     }catch (e){
+//         done(e)
+//     }
+// })
 
 
 

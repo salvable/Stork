@@ -5,17 +5,12 @@ const createError = require("http-errors");
 
 exports.checkAuth = async (req, res, next) => {
     try {
-        console.log("req: " + req.user)
+        console.log(req.session)
         next()
     }
 
     catch (error) {
-        //기간만료
-        if (error.name === 'TokenExpiredError') {
-            return next(createError(419, 'TokenExpiredError'))
-        }
-
         // 권한없음
-        return next(createError(401, 'Unauthorized'))
+        return next(createError(500, 'Internal Server Error'))
     }
 }
