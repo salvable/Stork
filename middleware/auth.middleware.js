@@ -16,7 +16,6 @@ exports.checkAuth = async (req, res, next) => {
                 throw new Error
             }
         }
-
         next()
     }
 
