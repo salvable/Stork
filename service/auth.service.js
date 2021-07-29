@@ -8,7 +8,7 @@ exports.signAccessToken = async (userId) => {
             },
             secretObj.secret,
             {
-                expiresIn: '15m'
+                expiresIn: '60m'
             }
         )
 
