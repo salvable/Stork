@@ -4,8 +4,10 @@ const favoriteService = require('../service/favorite.service')
 
 exports.addFavorite = async (req, res, next) => {
     const userId = req.params.userId
-    const favoriteId = req.query.favoriteId
-    const favoriteName = req.query.favoriteName
+    const favoriteId = req.body.favoriteId
+    const favoriteName = req.body.favoriteName
+
+    console.log(userId,favoriteId,favoriteName)
 
     if(!userId || !favoriteId || !favoriteName){
         return next(createError(400, 'BadRequestError'))
