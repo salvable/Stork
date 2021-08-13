@@ -63,19 +63,19 @@ exports.removeFavorite  = async (favoriteId,userId) => {
 
 exports.getFavorites  = async (userId) => {
     try {
-        const favorites = await favorites.findAll({
+        const favorite = await favorites.findAll({
             where:{
                 userId: userId
             }
         })
 
-        if(!favorites){
+        if(!favorite){
             const err = new Error("NotFoundError")
             err.name = "NotFoundError"
             throw err
         }
 
-        return favorites
+        return favorite
 
     } catch (err) {
         return err.name
@@ -84,17 +84,19 @@ exports.getFavorites  = async (userId) => {
 
 exports.getFavorite  = async (userId, favoriteId) => {
     try {
-        const favorites = await favorites.findAll({
+
+        const favorite = await favorites.findOne({
             where:{
-                userId: userId
+                userId: userId,
+                favoriteId: favoriteId
             }
         })
 
-        if(!favorites){
+        if(!favorite){
             return null
         }
 
-        return favorites
+        return favorite
 
     } catch (err) {
         return err.name
