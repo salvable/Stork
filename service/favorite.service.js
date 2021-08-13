@@ -81,3 +81,22 @@ exports.getFavorites  = async (userId) => {
         return err.name
     }
 }
+
+exports.getFavorite  = async (userId, favoriteId) => {
+    try {
+        const favorites = await favorites.findAll({
+            where:{
+                userId: userId
+            }
+        })
+
+        if(!favorites){
+            return null
+        }
+
+        return favorites
+
+    } catch (err) {
+        return err.name
+    }
+}

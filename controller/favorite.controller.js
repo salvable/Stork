@@ -65,5 +65,27 @@ exports.getFavorites = async (req, res, next) => {
             favorites: favorites
         }
     )
+}
 
+exports.getFavorite = async (req, res, next) => {
+    const userId = req.params.userId
+    const favoriteId = req.query.favoriteId
+
+    if(!userId || !favoriteId){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    const favorite = await favoriteService.getFavorite(userId,favoriteId)
+
+    if(!favorite){
+        return res.send({
+            favorite: favorite
+        })
+    }
+
+    return res.send(
+        {
+            favorite: favorite
+        }
+    )
 }

@@ -42,7 +42,9 @@ app.get('/stork/:userId/:storkName',authMiddleware.checkAuth, storkController.ge
 app.get('/account/:userId',authMiddleware.checkAuth, storkController.getStorks)
 app.post('/favorite/:userId',authMiddleware.checkAuth, favoriteController.addFavorite)
 app.delete('/favorite/:userId',authMiddleware.checkAuth, favoriteController.removeFavorite)
+app.get('/favorite/:userId',authMiddleware.checkAuth, favoriteController.getFavorite)
 app.get('/favorites/:userId',authMiddleware.checkAuth, favoriteController.getFavorites)
+
 
 const driver = async () =>{
     try{
