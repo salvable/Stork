@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING(20),
             allowNull:false
         },
+        type:{
+            type: DataTypes.STRING(20),
+            allowNull:false
+        }
     });
     favorite.associate = function (models) {
         favorite.belongsTo(models.user,{foreignKey: "userId", onDelete: 'CASCADE'});

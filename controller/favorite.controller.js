@@ -6,14 +6,13 @@ exports.addFavorite = async (req, res, next) => {
     const userId = req.params.userId
     const favoriteId = req.body.favoriteId
     const favoriteName = req.body.favoriteName
-
-    console.log(userId,favoriteId,favoriteName)
+    const type = req.body.type
 
     if(!userId || !favoriteId || !favoriteName){
         return next(createError(400, 'BadRequestError'))
     }
 
-    const favorite = await favoriteService.addFavorite(favoriteId,favoriteName,userId)
+    const favorite = await favoriteService.addFavorite(favoriteId,favoriteName,userId,type)
 
     if(favorite == "Conflict"){
         return next(createError(409, 'Conflict'))

@@ -1,7 +1,7 @@
 const db = require('../models')
 const favorites = db["favorite"]
 
-exports.addFavorite  = async (favoriteId,favoriteName,userId) => {
+exports.addFavorite  = async (favoriteId,favoriteName,userId,type) => {
 
     try {
         const favorite = await favorites.findOne({
@@ -21,7 +21,8 @@ exports.addFavorite  = async (favoriteId,favoriteName,userId) => {
         const newFavorite = await favorites.create({
             favoriteId: favoriteId,
             favoriteName: favoriteName,
-            userId: userId
+            userId: userId,
+            type: type
         })
 
         return newFavorite
