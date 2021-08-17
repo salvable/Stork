@@ -1,4 +1,5 @@
 const db = require('../models')
+const {Op} = require("sequelize");
 const favorites = db["favorite"]
 
 exports.addFavorite  = async (favoriteId,favoriteName,userId,type) => {
@@ -90,6 +91,29 @@ exports.getFavorite  = async (userId, favoriteId) => {
             where:{
                 userId: userId,
                 favoriteId: favoriteId
+            }
+        })
+
+        if(!favorite){
+            return null
+        }
+
+        return favorite
+
+    } catch (err) {
+        return err.name
+    }
+}
+
+exports.getFavoritesByName  = async (userId, search) => {
+    try {
+
+        const favorite = await favorites.findAll({
+            where:{
+                favoriteName: {
+                    [Op.like]: "%" + search + "%"
+                },
+                userId: userId,
             }
         })
 

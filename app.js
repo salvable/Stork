@@ -44,6 +44,7 @@ app.post('/favorite/:userId',authMiddleware.checkAuth, favoriteController.addFav
 app.delete('/favorite/:userId',authMiddleware.checkAuth, favoriteController.removeFavorite)
 app.get('/favorite/:userId',authMiddleware.checkAuth, favoriteController.getFavorite)
 app.get('/favorites/:userId',authMiddleware.checkAuth, favoriteController.getFavorites)
+app.get('/favorites/getFavoriteList/:userId',authMiddleware.checkAuth, favoriteController.getFavoritesByName)
 
 
 const driver = async () =>{
