@@ -14,7 +14,7 @@ exports.addBoard = async (req, res, next) => {
 
     const board = await boardService.addBoard(name,content,writer,password)
 
-    if(!board){
+    if(board == "BadRequestError"){
         return next(createError(400, 'Bad request'))
     }
 
