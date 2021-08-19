@@ -2,9 +2,10 @@ module.exports = (sequelize, DataTypes) => {
     // 글번호, 글제목, 글 내용, 글쓴이 (익명가능),비밀번호 ,작성날짜 ,조회수 , 추천수
     const board = sequelize.define('board', {
         boardId: {
-            type: DataTypes.STRING(20),
+            type: DataTypes.INTEGER,
             allowNull:false,
-            primaryKey: true
+            primaryKey: true,
+            autoIncrement: true
         },
         name: {
             type: DataTypes.STRING(50),
@@ -19,10 +20,6 @@ module.exports = (sequelize, DataTypes) => {
             allowNull:false
         },
         password:{
-            type: DataTypes.STRING(20),
-            allowNull:false
-        },
-        writer:{
             type: DataTypes.STRING(20),
             allowNull:false
         },
