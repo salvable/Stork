@@ -6,11 +6,11 @@ module.exports = (sequelize, DataTypes) => {
             allowNull:false,
             primaryKey: true
         },
-        boardName: {
+        name: {
             type: DataTypes.STRING(50),
             allowNull:false,
         },
-        boardContent: {
+        content: {
             type: DataTypes.TEXT(),
             allowNull:false
         },
@@ -35,9 +35,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull:false
         },
-
     });
 
-
+    board.associate = function(models){
+        board.hasMany(models.comment,{ foreignKey: 'boardId' })
+    };
     return board;
 };
