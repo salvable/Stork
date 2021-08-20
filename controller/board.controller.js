@@ -24,3 +24,37 @@ exports.addBoard = async (req, res, next) => {
         }
     )
 }
+
+exports.modifyBoard = async (req, res, next) => {
+    const boardId = req.params.boardId
+    const name = req.body.name
+    const content = req.body.content
+    const password = req.body.password
+
+    if(!boardId || !content || !name || !password){
+        return next(createError(400, 'Bad request'))
+    }
+
+    const checkBoard = await boardService.checkBoard(boardId,password)
+    if(checkBoard == "Forbidden"){
+        return next(createError(403, 'Forbidden'))
+    }
+
+    const board = await boardService.modifyBoard(boardId,name,content)
+
+    if(board == "BadRequestError"){
+        return next(createError(400, 'Bad request'))
+    }
+
+    const newBoard = await boardService.getBoard(boardId)
+
+    if(!newBoard){
+        return next(createError(404, 'NotFoundError'))
+    }
+
+    return res.send(
+        {
+            board: newBoard
+        }
+    )
+}

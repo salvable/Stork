@@ -20,6 +20,28 @@ exports.addBoard = async (name,content,writer,password) => {
 
         return board
 
+exports.modifyBoard = async (boardId,name,content) => {
+    try {
+        const updateBoard = await Board.update({
+            name: name,
+            content: content,
+        },{
+            where:{
+                boardId: boardId
+            }})
+
+        if(!updateBoard){
+            const err = new Error("BadRequestError")
+            err.name = "BadRequestError"
+            throw err
+        }
+
+        return true
+
+    } catch (err) {
+        return err.name
+    }
+}
     } catch (err) {
         return err.name
     }
