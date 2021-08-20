@@ -4,6 +4,7 @@ const accountController = require('./controller/account.controller')
 const storkController = require('./controller/stork.controller')
 const favoriteController = require('./controller/favorite.controller')
 const boardController = require('./controller/board.controller')
+const commentController = require("./controller/comment.controller");
 const authMiddleware = require('./middleware/auth.middleware')
 
 const passport = require('passport');
@@ -46,7 +47,8 @@ app.delete('/favorite/:userId',authMiddleware.checkAuth, favoriteController.remo
 app.get('/favorite/:userId',authMiddleware.checkAuth, favoriteController.getFavorite)
 app.get('/favorites/:userId',authMiddleware.checkAuth, favoriteController.getFavorites)
 app.get('/favorites/getFavoriteList/:userId',authMiddleware.checkAuth, favoriteController.getFavoritesByName)
-app.post('/board', boardController.addBoard)
+app.post('/board',authMiddleware.checkAuth ,boardController.addBoard)
+app.post('/board/:boardId/comment', authMiddleware.checkAuth, commentController.addComment)
 
 const driver = async () =>{
     try{
