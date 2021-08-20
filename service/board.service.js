@@ -20,6 +20,11 @@ exports.addBoard = async (name,content,writer,password) => {
 
         return board
 
+    } catch (err) {
+        return err.name
+    }
+}
+
 exports.modifyBoard = async (boardId,name,content) => {
     try {
         const updateBoard = await Board.update({
@@ -42,6 +47,7 @@ exports.modifyBoard = async (boardId,name,content) => {
         return err.name
     }
 }
+
 exports.checkBoard = async (boardId,password) => {
     try {
         const board = await Board.findOne({
@@ -63,6 +69,23 @@ exports.checkBoard = async (boardId,password) => {
         return err.name
     }
 }
+
+exports.getBoard = async (boardId) => {
+    try {
+        const board = await Board.findOne({
+            where:{
+                boardId: boardId
+            }
+        })
+
+        if(!board){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        return board
+
     } catch (err) {
         return err.name
     }
