@@ -48,6 +48,7 @@ app.get('/favorite/:userId',authMiddleware.checkAuth, favoriteController.getFavo
 app.get('/favorites/:userId',authMiddleware.checkAuth, favoriteController.getFavorites)
 app.get('/favorites/getFavoriteList/:userId',authMiddleware.checkAuth, favoriteController.getFavoritesByName)
 app.post('/board',authMiddleware.checkAuth ,boardController.addBoard)
+app.put('/board/:boardId',authMiddleware.checkAuth ,boardController.modifyBoard)
 app.post('/board/:boardId/comment', authMiddleware.checkAuth, commentController.addComment)
 
 const driver = async () =>{
