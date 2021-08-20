@@ -42,6 +42,27 @@ exports.modifyBoard = async (boardId,name,content) => {
         return err.name
     }
 }
+exports.checkBoard = async (boardId,password) => {
+    try {
+        const board = await Board.findOne({
+            where:{
+                boardId: boardId,
+                password: password
+            }
+        })
+
+        if(!board){
+            const err = new Error("Forbidden")
+            err.name = "Forbidden"
+            throw err
+        }
+
+        return true
+
+    } catch (err) {
+        return err.name
+    }
+}
     } catch (err) {
         return err.name
     }
