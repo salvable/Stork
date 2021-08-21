@@ -58,3 +58,24 @@ exports.modifyBoard = async (req, res, next) => {
         }
     )
 }
+
+exports.getBoard = async (req, res, next) => {
+    const boardId = req.params.boardId
+
+    if(!boardId){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    const board = await boardService.getBoard(boardId)
+
+    if(!board || board == "NotFoundError"){
+        return next(createError(404, 'NotFoundError'))
+    }
+
+    return res.send(
+        {
+            board: board
+        }
+    )
+}
+}
