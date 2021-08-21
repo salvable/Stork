@@ -9,13 +9,13 @@ exports.addBoard = async (req, res, next) => {
     const password = req.body.password
 
     if(!name || !content || !writer || !password){
-        return next(createError(400, 'Bad request'))
+        return next(createError(400, 'BadRequestError'))
     }
 
     const board = await boardService.addBoard(name,content,writer,password)
 
     if(board == "BadRequestError"){
-        return next(createError(400, 'Bad request'))
+        return next(createError(400, 'BadRequestError'))
     }
 
     return res.send(
@@ -32,7 +32,7 @@ exports.modifyBoard = async (req, res, next) => {
     const password = req.body.password
 
     if(!boardId || !content || !name || !password){
-        return next(createError(400, 'Bad request'))
+        return next(createError(400, 'BadRequestError'))
     }
 
     const checkBoard = await boardService.checkBoard(boardId,password)
@@ -43,7 +43,7 @@ exports.modifyBoard = async (req, res, next) => {
     const board = await boardService.modifyBoard(boardId,name,content)
 
     if(board == "BadRequestError"){
-        return next(createError(400, 'Bad request'))
+        return next(createError(400, 'BadRequestError'))
     }
 
     const newBoard = await boardService.getBoard(boardId)
