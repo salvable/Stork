@@ -90,3 +90,24 @@ exports.getBoard = async (boardId) => {
         return err.name
     }
 }
+
+
+exports.getBoards = async (page, pageSize) => {
+    try {
+        const board = await Board.findAll({
+            limit: pageSize,
+            offset: pageSize * (page - 1)
+        })
+
+        if(!board){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        return board
+
+    } catch (err) {
+        return err.name
+    }
+}

@@ -78,4 +78,29 @@ exports.getBoard = async (req, res, next) => {
         }
     )
 }
+
+exports.getdBoards = async (req, res, next) => {
+    const page = req.query.page
+    const pageSize = req.query.pageSize || 10
+
+    if(!page || !pageSize){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    if(page < 1){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+
+    const board = await boardService.addBoards(page,pageSize)
+
+    if(board == "BadRequestError"){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    return res.send(
+        {
+            board: board
+        }
+    )
 }
