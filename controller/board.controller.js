@@ -79,7 +79,7 @@ exports.getBoard = async (req, res, next) => {
     )
 }
 
-exports.getdBoards = async (req, res, next) => {
+exports.getBoards = async (req, res, next) => {
     const page = req.query.page
     const pageSize = req.query.pageSize || 10
 

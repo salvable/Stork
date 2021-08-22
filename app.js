@@ -48,6 +48,9 @@ app.get('/favorite/:userId',authMiddleware.checkAuth, favoriteController.getFavo
 app.get('/favorites/:userId',authMiddleware.checkAuth, favoriteController.getFavorites)
 app.get('/favorites/getFavoriteList/:userId',authMiddleware.checkAuth, favoriteController.getFavoritesByName)
 app.post('/board',authMiddleware.checkAuth ,boardController.addBoard)
+// 게시글을 보는 것은 비회원도 가능한 요청이라 checkAuth를 거치지 않음
+app.get('/board', boardController.getBoard)
+app.get('/boards', boardController.getBoards)
 app.put('/board/:boardId',authMiddleware.checkAuth ,boardController.modifyBoard)
 app.post('/board/:boardId/comment', authMiddleware.checkAuth, commentController.addComment)
 
