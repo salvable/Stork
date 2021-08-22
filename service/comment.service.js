@@ -47,6 +47,34 @@ exports.getComment = async (boardId) => {
     }
 }
 
+exports.deleteComment = async (boardId,commentId,password) => {
+    try {
+        const comment = await Comment.findOne({
+            where:{
+                boardId: boardId,
+                commentId: commentId
+            }
+        })
+
+        if(!comment){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        if(comment.password == password){
+            const result = await Comment.destroy({
+                where: {
+                    boardId: boardId,
+                    commentId: commentId
+                }
+            })
+
+            return result
+        }
+
+        return false
+
     } catch (err) {
         return err.name
     }

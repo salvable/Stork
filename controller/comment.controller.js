@@ -45,3 +45,24 @@ exports.getComment = async (req, res, next) => {
     )
 }
 
+exports.deleteComment = async (req, res, next) => {
+    const boardId = req.params.boardId
+    const commentId = req.body.commentId
+    const password = req.body.password
+
+    if(!boardId || !commentId || !password){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    const comment = await commentService.deleteComment(boardId,commentId,password)
+
+    if(comment != true){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    return res.send(
+        {
+            comment: comment
+        }
+    )
+}
