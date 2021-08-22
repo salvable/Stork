@@ -53,6 +53,7 @@ app.get('/board', boardController.getBoard)
 app.get('/boards', boardController.getBoards)
 app.put('/board/:boardId',authMiddleware.checkAuth ,boardController.modifyBoard)
 app.post('/board/:boardId/comment', authMiddleware.checkAuth, commentController.addComment)
+app.get('/board/:boardId/comment', commentController.getComment)
 
 const driver = async () =>{
     try{

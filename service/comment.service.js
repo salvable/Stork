@@ -25,3 +25,29 @@ exports.addComment = async (boardId, userId, password, content) => {
         return err.name
     }
 }
+
+exports.getComment = async (boardId) => {
+    try {
+        const comment = await Comment.findOne({
+            where:{
+                boardId: boardId
+            }
+        })
+
+        if(!comment){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        return comment
+
+    } catch (err) {
+        return err.name
+    }
+}
+
+    } catch (err) {
+        return err.name
+    }
+}
