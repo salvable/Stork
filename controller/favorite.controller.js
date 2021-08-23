@@ -78,10 +78,8 @@ exports.getFavorite = async (req, res, next) => {
 
     const favorite = await favoriteService.getFavorite(userId,favoriteId)
 
-    if(!favorite){
-        return res.send({
-            favorite: favorite
-        })
+    if(favorite == "NotFoundError"){
+        return next(createError(404, 'NotFoundError'))
     }
 
     return res.send(

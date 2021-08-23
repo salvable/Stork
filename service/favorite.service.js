@@ -95,7 +95,9 @@ exports.getFavorite  = async (userId, favoriteId) => {
         })
 
         if(!favorite){
-            return null
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
         }
 
         return favorite
