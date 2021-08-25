@@ -91,12 +91,14 @@ exports.getBoard = async (boardId) => {
     }
 }
 
-
 exports.getBoards = async (page, pageSize) => {
     try {
-        const board = await Board.findAll({
+        const board = await Board.findAndCountAll({
             limit: pageSize,
-            offset: pageSize * (page - 1)
+            offset: pageSize * (page - 1),
+            order: [
+                ['boardId', 'DESC'],
+            ],
         })
 
         if(!board){

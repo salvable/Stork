@@ -5,7 +5,7 @@ const boardService =require("../service/board.service")
 exports.addBoard = async (req, res, next) => {
     const name = req.body.userId
     const content = req.body.content
-    const writer = req.body.writer
+    const writer = req.body.writer || "익명"
     const password = req.body.password
 
     if(!name || !content || !writer || !password){
@@ -92,7 +92,7 @@ exports.getBoards = async (req, res, next) => {
     }
 
 
-    const board = await boardService.addBoards(page,pageSize)
+    const board = await boardService.getBoards(page,pageSize)
 
     if(board == "BadRequestError"){
         return next(createError(400, 'BadRequestError'))
@@ -100,7 +100,8 @@ exports.getBoards = async (req, res, next) => {
 
     return res.send(
         {
-            board: board
+            board: board.rows,
+            totalCount: board.count
         }
     )
 }
