@@ -66,6 +66,12 @@ exports.getBoard = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
+    const result = await boardService.updateHit(boardId)
+
+    if(result == "NotFoundError" ){
+        return next(createError(404, 'NotFoundError'))
+    }
+
     const board = await boardService.getBoard(boardId)
 
     if(!board || board == "NotFoundError"){
@@ -105,3 +111,4 @@ exports.getBoards = async (req, res, next) => {
         }
     )
 }
+

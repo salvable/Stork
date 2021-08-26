@@ -114,3 +114,32 @@ exports.getBoards = async (page, pageSize) => {
         return err.name
     }
 }
+
+exports.updateHit = async (boardId) => {
+    try {
+        const board = await Board.findOne({
+            where:{
+                boardId: boardId
+            }
+        })
+
+        if(!board){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        const newBoard = await Board.update({
+            hit: board.hit + 1
+        },{
+            where:{
+                boardId: boardId
+            }}
+        )
+
+        return true
+
+    } catch (err) {
+        return err.name
+    }
+}
