@@ -140,6 +140,46 @@ exports.updateHit = async (boardId) => {
         return true
 
     } catch (err) {
-        return err.name
+        return false
+    }
+}
+
+exports.updateStar = async (boardId,starType) => {
+    try {
+        const board = await Board.findOne({
+            where:{
+                boardId: boardId
+            }
+        })
+
+        if(!board){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        if(starType == "star"){
+            console.log("#####2323")
+            await Board.update({
+                star: board.star + 1
+                },{
+                    where:{
+                        boardId: boardId
+                    }}
+            )
+        }else{
+            await Board.update({
+                unStar: board.unStar + 1
+                },{
+                    where:{
+                        boardId: boardId
+                    }}
+            )
+        }
+
+        return true
+
+    } catch (err) {
+        return false
     }
 }

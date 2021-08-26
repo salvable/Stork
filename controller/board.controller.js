@@ -68,8 +68,8 @@ exports.getBoard = async (req, res, next) => {
 
     const result = await boardService.updateHit(boardId)
 
-    if(result == "NotFoundError" ){
-        return next(createError(404, 'NotFoundError'))
+    if(!result){
+        return next(createError(400,'BadRequestError'))
     }
 
     const board = await boardService.getBoard(boardId)
@@ -111,4 +111,32 @@ exports.getBoards = async (req, res, next) => {
         }
     )
 }
+
+exports.updateStar = async (req, res, next) => {
+    const boardId = req.params.boardId
+    const starType = req.body.type
+
+    if(!boardId || !starType){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    const result = await boardService.updateStar(boardId,starType)
+
+    if(!result){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    const newBoard = await boardService.getBoard(boardId)
+
+    if(newBoard == "NotFoundError"){
+        return next(createError(404, 'NotFoundError'))
+    }
+
+    return res.send(
+        {
+            board: newBoard
+        }
+    )
+}
+
 
