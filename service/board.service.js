@@ -10,6 +10,7 @@ exports.addBoard = async (name,content,writer,password) => {
             password: password,
             hit: 0,
             star: 0,
+            unStar: 0,
         })
 
         if(!board){

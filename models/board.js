@@ -32,6 +32,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull:false
         },
+        unStar:{
+            type: DataTypes.INTEGER,
+            allowNull:false
+        },
     });
 
     board.associate = function(models){
