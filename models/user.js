@@ -22,5 +22,9 @@ module.exports = (sequelize, DataTypes) => {
     user.associate = function(models){
         user.hasMany(models.favorite,{ foreignKey: 'userId' })
     };
+
+    user.associate = function(models){
+        user.hasMany(models.star,{ foreignKey: 'userId' })
+    };
     return user
 }

@@ -41,5 +41,9 @@ module.exports = (sequelize, DataTypes) => {
     board.associate = function(models){
         board.hasMany(models.comment,{ foreignKey: 'boardId' })
     };
+
+    board.associate = function(models){
+        board.hasMany(models.star,{ foreignKey: 'boardId' })
+    };
     return board;
 };
