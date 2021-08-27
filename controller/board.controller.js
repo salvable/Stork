@@ -1,6 +1,7 @@
 const createError = require("http-errors");
 const models = require("../models");
 const boardService =require("../service/board.service")
+const starService = require("../service/star.service");
 
 exports.addBoard = async (req, res, next) => {
     const name = req.body.userId
@@ -114,13 +115,23 @@ exports.getBoards = async (req, res, next) => {
 
 exports.updateStar = async (req, res, next) => {
     const boardId = req.params.boardId
+    const userId = req.body.userId
     const starType = req.body.type
 
-    if(!boardId || !starType){
+    if(!boardId || !starType || !userId){
         return next(createError(400, 'BadRequestError'))
     }
 
-    const result = await boardService.updateStar(boardId,starType)
+    const isExistStar = await starService.isExistStar(userId,boardId)
+    if(isExistStar){
+        return next(createError(409, "Conflict"))
+    }
+
+    const result = await models.sequelize.transaction(async (t) => {
+            const result = await boardService.updateStar(boardId, starType, t)
+            const star = await starService.addStar(boardId, userId, starType, t)
+        return result
+        })
 
     if(!result){
         return next(createError(400, 'BadRequestError'))

@@ -144,7 +144,9 @@ exports.updateHit = async (boardId) => {
     }
 }
 
-exports.updateStar = async (boardId,starType) => {
+exports.updateStar = async (boardId,starType,transaction = undefined) => {
+    const t = transaction || undefined
+
     try {
         const board = await Board.findOne({
             where:{
@@ -159,22 +161,19 @@ exports.updateStar = async (boardId,starType) => {
         }
 
         if(starType == "star"){
-            console.log("#####2323")
             await Board.update({
                 star: board.star + 1
                 },{
                     where:{
                         boardId: boardId
-                    }}
-            )
+                    }}, {transaction: t})
         }else{
             await Board.update({
                 unStar: board.unStar + 1
                 },{
                     where:{
                         boardId: boardId
-                    }}
-            )
+                    }},{transaction: t})
         }
 
         return true
