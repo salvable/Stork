@@ -51,6 +51,7 @@ app.post('/board',authMiddleware.checkAuth ,boardController.addBoard)
 // 게시글을 보는 것은 비회원도 가능한 요청이라 checkAuth를 거치지 않음
 app.get('/board/:boardId', boardController.getBoard)
 app.get('/boards', boardController.getBoards)
+app.delete('/board/:boardId', boardController.deleteBoard)
 app.put('/board/:boardId',authMiddleware.checkAuth ,boardController.modifyBoard)
 app.post('/board/:boardId/comment', authMiddleware.checkAuth, commentController.addComment)
 app.get('/board/:boardId/comment', commentController.getComment)

@@ -60,6 +60,30 @@ exports.modifyBoard = async (req, res, next) => {
     )
 }
 
+exports.deleteBoard = async (req, res, next) => {
+    const boardId = req.params.boardId
+    const password = req.query.password
+
+    console.log(boardId,password)
+    if(!boardId || !password){
+        return next(createError(400, 'Bad request'))
+    }
+
+    const board = await boardService.getBoardWithPassword(boardId,password)
+
+    if(board == "NotFoundError"){
+        return next(createError(404, 'NotFoundError'))
+    }
+
+    const result = await boardService.deleteBoard(boardId)
+
+    return res.send(
+        {
+            result: result
+        }
+    )
+}
+
 exports.getBoard = async (req, res, next) => {
     const boardId = req.params.boardId
 

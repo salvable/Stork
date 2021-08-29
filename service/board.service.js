@@ -92,6 +92,30 @@ exports.getBoard = async (boardId) => {
     }
 }
 
+exports.getBoardWithPassword = async (boardId,password) => {
+    try {
+        const board = await Board.findOne({
+            where:{
+                boardId: boardId,
+                password: password
+            }
+        })
+
+        if(!board){
+            const err = new Error("NotFoundError")
+            err.name = "NotFoundError"
+            throw err
+        }
+
+        return board
+
+    } catch (err) {
+        return err.name
+    }
+}
+
+
+
 exports.getBoards = async (page, pageSize) => {
     try {
         const board = await Board.findAndCountAll({
@@ -110,6 +134,22 @@ exports.getBoards = async (page, pageSize) => {
 
         return board
 
+    } catch (err) {
+        return err.name
+    }
+}
+
+exports.deleteBoard = async (boardId) => {
+    try {
+        const result = await Board.destroy({
+            where: {
+                boardId: boardId
+            }
+        })
+
+        // 제대로 처리되었다면 true 리턴
+
+        return true
     } catch (err) {
         return err.name
     }
