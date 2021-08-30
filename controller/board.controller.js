@@ -174,4 +174,24 @@ exports.updateStar = async (req, res, next) => {
     )
 }
 
+exports.checkBoardPassword = async (req, res, next) => {
+    const boardId = req.params.boardId
+    const password = req.query.password
+
+    if(!boardId || !password){
+        return next(createError(400, 'BadRequestError'))
+    }
+
+    const board = await boardService.getBoardWithPassword(boardId,password)
+
+    if(board == "NotFoundError"){
+        return next(createError(404, 'NotFoundError'))
+    }
+
+    return res.send(
+        {
+            result: true
+        }
+    )
+}
 
