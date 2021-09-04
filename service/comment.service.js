@@ -28,7 +28,7 @@ exports.addComment = async (boardId, userId, password, content) => {
 
 exports.getComment = async (boardId) => {
     try {
-        const comment = await Comment.findOne({
+        const comment = await Comment.findAll({
             where:{
                 boardId: boardId
             }
