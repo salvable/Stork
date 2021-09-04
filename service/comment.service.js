@@ -31,7 +31,9 @@ exports.getComment = async (boardId) => {
         const comment = await Comment.findAll({
             where:{
                 boardId: boardId
-            }
+            },order: [
+                ['createdAt', 'ASC'],
+            ]
         })
 
         if(!comment){
