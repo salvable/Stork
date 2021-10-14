@@ -2,7 +2,7 @@
 
 Stork Server
 
-#Model
+# Model
 
 user: 사용자, 사용자의 정보  
 account: 사용자의 포인트 잔액  
