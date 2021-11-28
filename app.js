@@ -30,11 +30,13 @@ app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
 app.get('/checkAuth', authController.checkAuth)
 app.get('/refreshToken', authController.refreshToken)
 app.post('/Login', authController.Login)
-app.post('/adduser' ,userController.addUser)
-app.get('/getUser/:userId',authMiddleware.checkAuth, userController.getUser)
+
+// 수정
+app.post('/user' ,userController.addUser)
+app.get('/user/:userId',authMiddleware.checkAuth, userController.getUser)
+app.delete('/user/:userId',authMiddleware.checkAuth, userController.deleteUser)
+app.put('/user/:userId',authMiddleware.checkAuth, userController.updateUser)
 app.get('/checkUser/:userId',authMiddleware.checkAuth,  userController.checkUser)
-app.delete('/deleteUser/:userId',authMiddleware.checkAuth, userController.deleteUser)
-app.put('/updateUser/:userId',authMiddleware.checkAuth, userController.updateUser)
 app.put('/user/account/addMoney/:accountId',authMiddleware.checkAuth, accountController.addMoney)
 app.put('/user/account/subMoney/:accountId',authMiddleware.checkAuth, accountController.subMoney)
 app.get('/account/:userId',authMiddleware.checkAuth, accountController.getAccount)
