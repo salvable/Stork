@@ -12,6 +12,7 @@ const passportConfig = require('./passport');
 const cors = require('cors')
 const express = require('express')
 const bodyParser = require('body-parser')
+const {errorMiddleware} = require("./middleware/error.middleware");
 const sequelize = require('./models').sequelize;
 const app = express()
 const port = 3000;
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: false }));  // 클라이언트의 form값
 app.use(cors());
 app.use(passport.initialize());
 passportConfig();
+app.use(errorMiddleware);
 app.use(function(err, req, res, next) {
     res.status(500).send('Something broke!');
 });
