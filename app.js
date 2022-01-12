@@ -27,6 +27,9 @@ app.use(function(err, req, res, next) {
     res.status(500).send('Something broke!');
 });
 
+
+//Todo 해당 restapi 리팩토링
+
 app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
     '');});
 app.get('/checkAuth', authController.checkAuth)
