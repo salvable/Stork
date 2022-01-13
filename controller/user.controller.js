@@ -104,7 +104,7 @@ exports.addUser = async (req, res, next) => {
         )
     } catch (err) {
         switch(err.name){
-            case "Conflict":
+            case "NOT FOUND":
                 return next(createError(409, 'Conflict'))
             case "Bad request":
                 return next(createError(400, 'Bad request'))

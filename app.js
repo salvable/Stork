@@ -12,7 +12,6 @@ const passportConfig = require('./passport');
 const cors = require('cors')
 const express = require('express')
 const bodyParser = require('body-parser')
-const {errorMiddleware} = require("./middleware/error.middleware");
 const sequelize = require('./models').sequelize;
 const app = express()
 const port = 3000;
@@ -22,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));  // 클라이언트의 form값
 app.use(cors());
 app.use(passport.initialize());
 passportConfig();
-app.use(errorMiddleware);
+
 app.use(function(err, req, res, next) {
     res.status(500).send('Something broke!');
 });
@@ -30,14 +29,13 @@ app.use(function(err, req, res, next) {
 
 //Todo 해당 restapi 리팩토링
 
-app.get ( '/', (req, res) => {res.send ( 'Hello Api Server!!!' +
-    '');});
+app.get ( '/', (req, res) => {res.send ( 'Stork Server!!!' );});
 app.get('/checkAuth', authController.checkAuth)
 app.get('/refreshToken', authController.refreshToken)
 app.post('/Login', authController.Login)
 
 // 수정
-app.post('/user' ,userController.addUser)
+app.get('/user' ,userController.addUser)
 app.get('/user/:userId',authMiddleware.checkAuth, userController.getUser)
 app.delete('/user/:userId',authMiddleware.checkAuth, userController.deleteUser)
 app.put('/user/:userId',authMiddleware.checkAuth, userController.updateUser)
@@ -76,6 +74,13 @@ const driver = async () =>{
 }
 
 driver();
+
+app.use(function(err, req, res, next) {
+    // Any request to this server will get here, and will send an HTTP
+    // response with the error message 'woops'
+    console.log(err)
+    res.status(err.statusCode || 500).send(err.message)
+});
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)

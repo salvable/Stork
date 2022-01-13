@@ -9,9 +9,7 @@ exports.addUser = async (userId,password,email,name,phoneNumber,transaction = un
     try {
         const user = await users.findByPk(userId)
         if(user){
-            const err = new Error("Conflict")
-            err.name = "Conflict"
-            throw err
+            throw new Error('NOT FOUND', 409);
         }
 
         const newUser = await users.create({
@@ -25,7 +23,8 @@ exports.addUser = async (userId,password,email,name,phoneNumber,transaction = un
         return newUser
 
     } catch (err) {
-        return err.name
+        console.log(err)
+        next(err)
     }
 }
 
