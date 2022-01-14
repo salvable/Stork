@@ -12,8 +12,7 @@ exports.addAccount = async (userId,transaction = undefined) => {
         })
 
         if(account){
-            const err = new Error("ValidationError")
-            err.name = "ValidationError"
+            const err = new Error("Conflict")
             throw err
         }
 
@@ -26,15 +25,14 @@ exports.addAccount = async (userId,transaction = undefined) => {
         },{transaction: t})
 
         if(!newAccount){
-            const err = new Error("create error")
-            err.name = "Bad request"
+            const err = new Error("Bad request")
             throw err
         }
 
         return newAccount
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 

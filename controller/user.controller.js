@@ -11,16 +11,32 @@ exports.getUser = async (req, res, next) => {
         return next(createError(400, 'Bad request'))
     }
 
-    const user = await userService.getUser(userId)
+    try{
+        const user = await userService.getUser(userId)
 
-    if(!user){
-        return next(createError(404, 'NotFoundError'))
+        if(user.message){
+            const err = new Error(user.message)
+            throw err
+        }
+
+        return res.send(
+            {
+                user: user
+            })
+    }catch (err){
+        switch(err.message){
+            case "Bad request":
+                return next(createError(400, 'Bad request'))
+            case "Not Found":
+                return next(createError(404, 'Not Found'))
+            case "Conflict":
+                return next(createError(409, 'Conflict'))
+            default:
+                return next(createError(500, 'Error'))
+        }
     }
 
-    return res.send(
-        {
-                user: user
-        })
+
 }
 
 exports.checkUser = async (req, res, next) => {
@@ -72,26 +88,23 @@ exports.addUser = async (req, res, next) => {
     try {
         const {user,account,grade} = await models.sequelize.transaction(async (t) => {
             const user = await userService.addUser(userId,password,email,name,phoneNumber,t)
-
-            if(user == "Conflict"){
-                const err = new Error("Conflict")
-                err.name = "Conflict"
+            if(user.message){
+                const err = new Error(user.message)
                 throw err
             }
 
             const account = await accountService.addAccount(userId,t)
-            if(account == "Bad request"){
-                const err = new Error("Bad request")
-                err.name = "Bad request"
+            if(account.message){
+                const err = new Error(account.message)
                 throw err
             }
 
             const grade = await gradeService.addGrade(userId,t)
-            if (grade == "Conflict"){
-                const err = new Error("Conflict")
-                err.name = "Conflict"
+            if(grade.message){
+                const err = new Error(grade.message)
                 throw err
             }
+
             return {user,account,grade}
         })
 
@@ -103,11 +116,13 @@ exports.addUser = async (req, res, next) => {
             }
         )
     } catch (err) {
-        switch(err.name){
-            case "NOT FOUND":
-                return next(createError(409, 'Conflict'))
+        switch(err.message){
             case "Bad request":
                 return next(createError(400, 'Bad request'))
+            case "Not Found":
+                return next(createError(404, 'Not Found'))
+            case "Conflict":
+                return next(createError(409, 'Conflict'))
             default:
                 return next(createError(500, 'Error'))
         }

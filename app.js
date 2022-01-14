@@ -75,13 +75,6 @@ const driver = async () =>{
 
 driver();
 
-app.use(function(err, req, res, next) {
-    // Any request to this server will get here, and will send an HTTP
-    // response with the error message 'woops'
-    console.log(err)
-    res.status(err.statusCode || 500).send(err.message)
-});
-
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 })

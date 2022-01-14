@@ -9,7 +9,8 @@ exports.addUser = async (userId,password,email,name,phoneNumber,transaction = un
     try {
         const user = await users.findByPk(userId)
         if(user){
-            throw new Error('NOT FOUND', 409);
+            const err = new Error('Conflict')
+            throw err
         }
 
         const newUser = await users.create({
@@ -23,8 +24,7 @@ exports.addUser = async (userId,password,email,name,phoneNumber,transaction = un
         return newUser
 
     } catch (err) {
-        console.log(err)
-        next(err)
+        return err
     }
 }
 
@@ -37,14 +37,13 @@ exports.getUser = async (userId) => {
         })
 
         if(user == null){
-            const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
+            const err = new Error("Not Found")
             throw err
         }
 
         return user
     } catch (err) {
-        return err.name
+        return err
     }
 }
 

@@ -15,7 +15,6 @@ exports.addGrade = async (userId,transaction = undefined) => {
         })
         if(ExistGrade){
             const err = new Error("Conflict")
-            err.name = "Conflict"
             throw err
         }
 
@@ -27,8 +26,7 @@ exports.addGrade = async (userId,transaction = undefined) => {
         return grade
 
     } catch (err) {
-        console.log(err)
-        return err.name
+        return err
     }
 }
 
