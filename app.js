@@ -27,31 +27,27 @@ app.use(function(err, req, res, next) {
 });
 
 
-//Todo 해당 restapi 리팩토링
-
 app.get ( '/', (req, res) => {res.send ( 'Stork Server!!!' );});
 app.get('/checkAuth', authController.checkAuth)
 app.get('/refreshToken', authController.refreshToken)
 app.post('/Login', authController.Login)
-
-// 수정
 app.get('/user' ,userController.addUser)
 app.get('/user/:userId',authMiddleware.checkAuth, userController.getUser)
 app.delete('/user/:userId',authMiddleware.checkAuth, userController.deleteUser)
 app.put('/user/:userId',authMiddleware.checkAuth, userController.updateUser)
 app.get('/checkUser/:userId',authMiddleware.checkAuth,  userController.checkUser)
-app.put('/user/account/addMoney/:accountId',authMiddleware.checkAuth, accountController.addMoney)
-app.put('/user/account/subMoney/:accountId',authMiddleware.checkAuth, accountController.subMoney)
+app.put('/user/account/deposit/:accountId',authMiddleware.checkAuth, accountController.addMoney)
+app.put('/user/account/withdrawal/:accountId',authMiddleware.checkAuth, accountController.subMoney)
 app.get('/account/:userId',authMiddleware.checkAuth, accountController.getAccount)
-app.post('/stork/addStork/:userId',authMiddleware.checkAuth, storkController.addStork)
-app.post('/stork/subStork/:userId',authMiddleware.checkAuth, storkController.subStork)
+app.post('/stork/purchase/:userId',authMiddleware.checkAuth, storkController.addStork)
+app.post('/stork/sale/:userId',authMiddleware.checkAuth, storkController.subStork)
 app.get('/stork/:userId/:storkName',authMiddleware.checkAuth, storkController.getStork)
 app.get('/account/:userId',authMiddleware.checkAuth, storkController.getStorks)
 app.post('/favorite/:userId',authMiddleware.checkAuth, favoriteController.addFavorite)
 app.delete('/favorite/:userId',authMiddleware.checkAuth, favoriteController.removeFavorite)
 app.get('/favorite/:userId',authMiddleware.checkAuth, favoriteController.getFavorite)
 app.get('/favorites/:userId',authMiddleware.checkAuth, favoriteController.getFavorites)
-app.get('/favorites/getFavoriteList/:userId',authMiddleware.checkAuth, favoriteController.getFavoritesByName)
+app.get('/favorites/favoriteList/:userId',authMiddleware.checkAuth, favoriteController.getFavoritesByName)
 app.post('/board',authMiddleware.checkAuth ,boardController.addBoard)
 // 게시글을 보는 것은 비회원도 가능한 요청이라 checkAuth를 거치지 않음
 app.get('/board/:boardId', boardController.getBoard)
