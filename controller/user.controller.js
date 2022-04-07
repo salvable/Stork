@@ -142,8 +142,8 @@ exports.updateUser = async (req, res, next) => {
 
     const isExistUser = await userService.getUser(userId)
 
-    if(isExistUser == "NotFoundError"){
-        return next(createError(404, 'NotFoundError'))
+    if(isExistUser.message == "Not Found"){
+        return next(createError(404, 'Not Found'))
     }
 
     try {

@@ -1,37 +1,108 @@
 const request =  require("supertest")
 const app = require("../app")
 
+const userId = "testJest"
+const password = "test1234"
+let accessToken = ""
 
-// it('GET / Test', async() => {
-//     // 명시한 api 경로를 통해 요청한 후 값을 받아온다.
-//     const response = await request(app).get('/')
-//     // 응답한 값이 예상한 값과 맞는 지 비교한다.
-//     expect(response.statusCode).toBe(200);
-//
-//     try {
-//         await response();
-//     } catch (e) {
-//         expect(e).toMatch('error');
-//     }
-// });
-
-it('GET / Test', async () => {
-    const response = await request(app).get('/');
-        // .send({
-        //
-        // });
-
-    expect(response.statusCode).toBe(200)
-});
-
-it('POST /user', async () => {
+//DB초기화 문제 정상적으로 작동
+it('POST /user 200', async () => {
     const response = await request(app).post('/user').send({
-        userId : "testJest",
-        password : "test1234",
+
+        userId : userId,
+        password : password,
         email : "jestTest@naver.com",
         name : "JEST",
         phoneNumber : "010-4548-8451"
     });
 
+
     expect(response.statusCode).toBe(200)
+});
+
+it('POST /user 400', async () => {
+    const response = await request(app).post('/user').send({
+        email : "jestTest@naver.com",
+        name : "JEST",
+        phoneNumber : "010-4548-8451"
+    });
+
+    expect(response.statusCode).toBe(400)
+});
+
+it('POST /user 409', async () => {
+    const response = await request(app).post('/user').send({
+        userId : userId,
+        password : password,
+        email : "jestTest@naver.com",
+        name : "JEST",
+        phoneNumber : "010-4548-8451"
+    });
+
+    expect(response.statusCode).toBe(409)
+});
+
+it('GET /Login 200', async () => {
+    const response = await request(app).post(`/Login`).send({
+        userId : userId,
+        password : password
+    });
+
+    accessToken = JSON.parse(response.res.text).token
+    expect(response.statusCode).toBe(200)
+});
+
+it('GET /user/:userId 200', async () => {
+    const response = await request(app).get(`/user/${userId}`).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(200)
+});
+
+it('GET /user/:userId 404', async () => {
+    const response = await request(app).get(`/user/NotFoundTest`).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(404)
+});
+
+it('PUT /user 200', async () => {
+    const response = await request(app).put(`/user/${userId}`)
+        .send({
+            password : password,
+            email : "modifyTest@naver.com",
+            name : "Modify Test",
+            phoneNumber : "010-3333-1111"
+        }).set(
+            'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(200)
+});
+
+it('PUT /user 400', async () => {
+    const response = await request(app).put(`/user/${userId}`)
+        .send({
+            phoneNumber : "010-3333-1111"
+        }).set(
+            'Authorization' ,  `Bearer ${accessToken}`
+        );
+
+    expect(response.statusCode).toBe(400)
+});
+
+it('PUT /user 404', async () => {
+    const response = await request(app).put(`/user/NotFoundTest`)
+        .send({
+            password : password,
+            email : "modifyTest@naver.com",
+            name : "Modify Test",
+            phoneNumber : "010-3333-1111"
+        }).set(
+            'Authorization' ,  `Bearer ${accessToken}`
+        );
+
+    expect(response.statusCode).toBe(404)
 });
