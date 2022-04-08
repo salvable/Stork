@@ -31,18 +31,15 @@ exports.addMoney = async (req, res, next) => {
     const money = req.query.money
 
 
-    if(!accountId || !money){
-        const err = new Error('BadRequestError')
-        err.name = 'BadRequestError'
-        throw err
+    if(!accountId || !money || !userId){
+        return next(createError(400, 'Bad request'))
     }
 
     try {
-        const account =await accountService.addMoney(accountId,money)
-
-        if(account == 'NotFoundError'){
-            const err = new Error(account)
-            err.name = account
+        const account =await accountService.addMoney(userId, accountId, money)
+        console.log(account)
+        if(account.message){
+            const err = new Error(account.message)
             throw err
         }
 
@@ -71,18 +68,15 @@ exports.subMoney = async (req, res, next) => {
     const money = req.query.money
 
 
-    if(!accountId || !money){
-        const err = new Error('BadRequestError')
-        err.name = 'BadRequestError'
-        throw err
+    if(!accountId || !money || !userId){
+        return next(createError(400, 'Bad request'))
     }
 
     try {
-        const account =await accountService.subMoney(accountId,money)
+        const account =await accountService.subMoney(userId, accountId, money)
 
-        if(account == 'NotFoundError'){
-            const err = new Error(account)
-            err.name = account
+        if(account.message){
+            const err = new Error(account.message)
             throw err
         }
 

@@ -36,9 +36,7 @@ exports.addAccount = async (userId,transaction = undefined) => {
     }
 }
 
-exports.addMoneyByStork = async (userId, accountId, number, price, transaction = undefined) => {
-    const t = transaction || undefined
-
+exports.addMoney = async (userId, accountId, money) => {
     try {
         const account = await Account.findOne({
             where:{
@@ -49,23 +47,57 @@ exports.addMoneyByStork = async (userId, accountId, number, price, transaction =
 
         if(!account){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
         await Account.update({
-            money: account.money + parseInt(number) * parseInt(price)
+            money: account.money + parseInt(money)
         },{
             where: {
                 userId: userId,
                 accountId: accountId
             }
-        },{transaction:t})
+        })
 
         return true
 
     } catch (err) {
-        return err.name
+        return err
+    }
+}
+
+exports.subMoney = async (userId, accountId, money) => {
+    try {
+        const account = await Account.findOne({
+            where:{
+                accountId: accountId,
+                userId: userId
+            }
+        })
+
+        if(!account){
+            const err = new Error("NotFoundError")
+            throw err
+        }
+
+        if(account.money < money){
+            const err = new Error("BadRequestError")
+            throw err
+        }
+
+        await Account.update({
+            money: account.money + parseInt(money)
+        },{
+            where: {
+                userId: userId,
+                accountId: accountId
+            }
+        })
+
+        return true
+
+    } catch (err) {
+        return err
     }
 }
 
