@@ -81,9 +81,10 @@ exports.subMoney = async (userId, accountId, money) => {
         }
 
         if(account.money < money){
-            const err = new Error("BadRequestError")
+            const err = new Error("Bad request")
             throw err
         }
+
 
         await Account.update({
             money: account.money + parseInt(money)

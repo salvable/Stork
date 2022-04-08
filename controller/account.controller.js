@@ -37,7 +37,7 @@ exports.addMoney = async (req, res, next) => {
 
     try {
         const account =await accountService.addMoney(userId, accountId, money)
-        console.log(account)
+
         if(account.message){
             const err = new Error(account.message)
             throw err
@@ -51,7 +51,7 @@ exports.addMoney = async (req, res, next) => {
             }
         )
     } catch (err) {
-        switch(err.name){
+        switch(err.message){
             case "Bad request":
                 return next(createError(400, 'Bad request'))
             case "NotFoundError":
@@ -64,9 +64,8 @@ exports.addMoney = async (req, res, next) => {
 
 exports.subMoney = async (req, res, next) => {
     const accountId = req.params.accountId
-    const userId = req.query.userId
+    const userId = req.params.userId
     const money = req.query.money
-
 
     if(!accountId || !money || !userId){
         return next(createError(400, 'Bad request'))
@@ -88,7 +87,7 @@ exports.subMoney = async (req, res, next) => {
             }
         )
     } catch (err) {
-        switch(err.name){
+        switch(err.message){
             case "Bad request":
                 return next(createError(400, 'Bad request'))
             case "NotFoundError":

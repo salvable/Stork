@@ -5,7 +5,6 @@ const userId = "testJest"
 const password = "test1234"
 let accessToken = ""
 
-//DB초기화 문제 정상적으로 작동
 it('POST /user 200', async () => {
     const response = await request(app).post('/user').send({
 
