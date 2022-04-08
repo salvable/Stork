@@ -106,3 +106,39 @@ it('PUT /user 404', async () => {
 
     expect(response.statusCode).toBe(404)
 });
+
+it('GET /verification/:userId 200' , async () => {
+    const response = await request(app).get(`/verification/${userId}?password=${password}`)
+        .set(
+            'Authorization' ,  `Bearer ${accessToken}`
+        );
+
+    expect(response.statusCode).toBe(200)
+});
+
+it('GET /verification/:userId 400' , async () => {
+    const response = await request(app).get(`/verification/${userId}`)
+        .set(
+            'Authorization' ,  `Bearer ${accessToken}`
+        );
+
+    expect(response.statusCode).toBe(400)
+});
+
+it('GET /verification/:userId 404' , async () => {
+    const response = await request(app).get(`/verification/NotFoundTest?password=${password}`)
+        .set(
+            'Authorization' ,  `Bearer ${accessToken}`
+        );
+
+    expect(response.statusCode).toBe(404)
+});
+
+it('DELETE /user/:userId 200' , async () => {
+    const response = await request(app).delete(`/user/${userId}`)
+        .set(
+            'Authorization' ,  `Bearer ${accessToken}`
+        );
+
+    expect(response.statusCode).toBe(200)
+});
