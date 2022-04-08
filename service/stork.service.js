@@ -21,15 +21,18 @@ exports.addStork  = async (userId, storkName, number, transaction = undefined) =
             return newStork
         }
 
-        await storks.update({
-            storkCount: parseInt(stork.storkCount) + parseInt(number)
-            },{
-            where:{
-                    userId: userId,
-                    storkName: storkName
-                }
-            },{transaction: t}
-        )
+        else{
+            await storks.update({
+                    storkCount: parseInt(stork.storkCount) + parseInt(number)
+                },{
+                    where:{
+                        userId: userId,
+                        storkName: storkName
+                    }
+                },{transaction: t}
+            )
+        }
+
         return true
 
     } catch (err) {

@@ -27,7 +27,7 @@ exports.getAccount = async (req, res, next) => {
 
 exports.addMoney = async (req, res, next) => {
     const accountId = req.params.accountId
-    const userId = req.query.userId
+    const userId = req.params.userId
     const money = req.query.money
 
 

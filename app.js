@@ -36,11 +36,11 @@ app.get('/user/:userId',authMiddleware.checkAuth, userController.getUser)
 app.delete('/user/:userId',authMiddleware.checkAuth, userController.deleteUser)
 app.put('/user/:userId',authMiddleware.checkAuth, userController.updateUser)
 app.get('/verification/:userId',authMiddleware.checkAuth,  userController.checkUser)
-app.put('/user/account/deposit/:accountId',authMiddleware.checkAuth, accountController.addMoney)
-app.put('/user/account/withdrawal/:accountId',authMiddleware.checkAuth, accountController.subMoney)
+app.put('/user/:userId/account/:accountId/deposit',authMiddleware.checkAuth, accountController.addMoney)
+app.put('/user/:userId/account/:accountId/withdrawal',authMiddleware.checkAuth, accountController.subMoney)
 app.get('/account/:userId',authMiddleware.checkAuth, accountController.getAccount)
-app.post('/stork/purchase/:userId',authMiddleware.checkAuth, storkController.addStork)
-app.post('/stork/sale/:userId',authMiddleware.checkAuth, storkController.subStork)
+app.post('/stork/purchase/:userId/:accountId',authMiddleware.checkAuth, storkController.addStork)
+app.post('/stork/sale/:userId/:accountId',authMiddleware.checkAuth, storkController.subStork)
 app.get('/stork/:userId/:storkName',authMiddleware.checkAuth, storkController.getStork)
 app.get('/account/:userId',authMiddleware.checkAuth, storkController.getStorks)
 app.post('/favorite/:userId',authMiddleware.checkAuth, favoriteController.addFavorite)
@@ -71,9 +71,9 @@ const driver = async () =>{
 
 driver();
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`)
-})
+if (process.env.NODE_ENV !== 'test') {
+    app.listen(port, () => console.log(`Listening on port ${port}`))
+}
 
 module.exports = app;
 

@@ -6,6 +6,7 @@ const models = require('../models')
 
 exports.addStork = async (req, res, next) => {
     const userId = req.params.userId
+    const accountId = req.params.accountId
     const storkName = req.query.storkName
     const number = req.query.number
     const price = req.query.price
@@ -16,14 +17,14 @@ exports.addStork = async (req, res, next) => {
 
     try {
          await models.sequelize.transaction(async (t) => {
-            const account = await accountService.subMoney(userId,number,price,t)
+            const account = await accountService.subMoneyByStork(userId, accountId, number, price, t)
             if(account == "NotFoundError" || account == "BadRequestError"){
                 const err = new Error(account)
                 err.name = account
                 throw err
             }
 
-            const stork = await storkService.addStork(userId, storkName, number, t)
+            const stork = await storkService.addStork(userId, number, price, t)
              if(stork == "NotFoundError" || stork == "BadRequestError"){
                  const err = new Error(stork)
                  err.name = stork
@@ -55,6 +56,7 @@ exports.addStork = async (req, res, next) => {
 
 exports.subStork = async (req, res, next) => {
     const userId = req.params.userId
+    const accountId = req.params.accountId
     const storkName = req.query.storkName
     const number = req.query.number
     const price = req.query.price
@@ -65,7 +67,7 @@ exports.subStork = async (req, res, next) => {
 
     try {
         await models.sequelize.transaction(async (t) => {
-            const account = await accountService.addMoney(userId,number,price,t)
+            const account = await accountService.addMoneyByStork(userId, accountId, number, price, t)
             if(account == "NotFoundError" || account == "BadRequestError"){
                 const err = new Error(account)
                 err.name = account

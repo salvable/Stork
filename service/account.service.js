@@ -36,12 +36,13 @@ exports.addAccount = async (userId,transaction = undefined) => {
     }
 }
 
-exports.addMoney = async (userId , number, price, transaction = undefined) => {
+exports.addMoneyByStork = async (userId, accountId, number, price, transaction = undefined) => {
     const t = transaction || undefined
 
     try {
         const account = await Account.findOne({
             where:{
+                accountId: accountId,
                 userId: userId
             }
         })
@@ -56,7 +57,8 @@ exports.addMoney = async (userId , number, price, transaction = undefined) => {
             money: account.money + parseInt(number) * parseInt(price)
         },{
             where: {
-                userId: userId
+                userId: userId,
+                accountId: accountId
             }
         },{transaction:t})
 
@@ -67,13 +69,14 @@ exports.addMoney = async (userId , number, price, transaction = undefined) => {
     }
 }
 
-exports.subMoney = async (userId , number, price, transaction = undefined) => {
+exports.subMoneyByStork = async (userId, accountId, number, price, transaction = undefined) => {
     const t = transaction || undefined
 
     try {
         const account = await Account.findOne({
             where:{
-                userId: userId
+                userId: userId,
+                accountId: accountId
             }
         })
 
