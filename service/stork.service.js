@@ -1,7 +1,7 @@
 const db = require('../models')
 const storks = db["stork"]
 
-exports.addStork  = async (userId, storkName, number, transaction = undefined) => {
+exports.addStork  = async (userId, storkName, number, transaction) => {
     const t = transaction || undefined
 
     try {
@@ -10,6 +10,8 @@ exports.addStork  = async (userId, storkName, number, transaction = undefined) =
                 userId: userId
             }
         })
+
+
         // 해당 주식을 보유중이지 않다면 새로 생성
         if(!stork){
             const newStork = await storks.create({
@@ -36,11 +38,12 @@ exports.addStork  = async (userId, storkName, number, transaction = undefined) =
         return true
 
     } catch (err) {
+        console.log(err)
         return err.name
     }
 }
 
-exports.subStork  = async (userId, storkName, number, transaction = undefined) => {
+exports.subStork  = async (userId, storkName, number, transaction) => {
     const t = transaction || undefined
 
     try {

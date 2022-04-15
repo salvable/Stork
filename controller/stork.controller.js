@@ -11,7 +11,7 @@ exports.addStork = async (req, res, next) => {
     const number = req.query.number
     const price = req.query.price
 
-    if(!userId || !storkName || !number || !price){
+    if(!userId || !storkName || !number || !price || !accountId){
         return next(createError(400, 'BadRequestError'))
     }
 
@@ -24,7 +24,9 @@ exports.addStork = async (req, res, next) => {
                 throw err
             }
 
-            const stork = await storkService.addStork(userId, number, price, t)
+            const stork = await storkService.addStork(userId, storkName, number, t)
+
+             console.log(stork)
              if(stork == "NotFoundError" || stork == "BadRequestError"){
                  const err = new Error(stork)
                  err.name = stork
