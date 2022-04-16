@@ -115,14 +115,11 @@ exports.subMoneyByStork = async (userId, accountId, number, price, transaction =
 
         if(!account){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
-        if(account.money < number * price){
+        if(account.money < parseInt(number) * parseInt(price)){
             const err = new Error("BadRequestError")
-            err.name = "BadRequestError"
-            err.code = 400
             throw err
         }
 

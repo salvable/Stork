@@ -18,18 +18,16 @@ exports.addStork = async (req, res, next) => {
     try {
          await models.sequelize.transaction(async (t) => {
             const account = await accountService.subMoneyByStork(userId, accountId, number, price, t)
-            if(account == "NotFoundError" || account == "BadRequestError"){
-                const err = new Error(account)
-                err.name = account
+
+            if(account.message){
+                const err = new Error(account.message)
                 throw err
             }
 
             const stork = await storkService.addStork(userId, storkName, number, t)
 
-             console.log(stork)
-             if(stork == "NotFoundError" || stork == "BadRequestError"){
-                 const err = new Error(stork)
-                 err.name = stork
+             if(stork.message){
+                 const err = new Error(stork.message)
                  throw err
              }
         })
@@ -44,11 +42,11 @@ exports.addStork = async (req, res, next) => {
             }
         )
     } catch (err) {
-        switch(err.name){
-            case "NotFoundError":
-                return next(createError(400, 'NotFoundError'))
+        switch(err.message){
             case "BadRequestError":
-                return next(createError(404, 'BadRequestError'))
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
             default:
                 return res.status(500).json(err)
 

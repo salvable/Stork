@@ -11,16 +11,14 @@ exports.addStork  = async (userId, storkName, number, transaction) => {
             }
         })
 
-
         // 해당 주식을 보유중이지 않다면 새로 생성
         if(!stork){
             const newStork = await storks.create({
                 userId: userId,
                 storkName: storkName,
-                storkCount: number,
+                storkCount: number
             },{transaction: t})
 
-            return newStork
         }
 
         else{
@@ -38,8 +36,7 @@ exports.addStork  = async (userId, storkName, number, transaction) => {
         return true
 
     } catch (err) {
-        console.log(err)
-        return err.name
+        return err
     }
 }
 

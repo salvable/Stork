@@ -3,7 +3,6 @@ module.exports = (sequelize, DataTypes) => {
         storkName: {
             type: DataTypes.STRING(50),
             allowNull:false,
-            primaryKey: true
         },
         storkCount: {
             type: DataTypes.STRING(20),

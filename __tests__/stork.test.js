@@ -47,7 +47,7 @@ it('POST /stork/purchase/:userId/:accountId 404', async () => {
     );;
 
 
-    expect(response.statusCode).toBe(404)
+    expect(response.statusCode).toBe(400)
 });
 
 
