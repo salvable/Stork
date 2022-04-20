@@ -41,7 +41,7 @@ it('POST /user 409', async () => {
     expect(response.statusCode).toBe(409)
 });
 
-it('GET /Login 200', async () => {3
+it('POST /Login 200', async () => {
     const response = await request(app).post(`/Login`).send({
         userId : userId,
         password : password

@@ -22,7 +22,7 @@ it('POST /user 200', async () => {
 });
 
 
-it('GET /Login 200', async () => {
+it('POST /Login 200', async () => {
     const response = await request(app).post(`/Login`).send({
         userId : userId,
         password : password

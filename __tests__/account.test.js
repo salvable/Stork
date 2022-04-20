@@ -21,7 +21,7 @@ it('POST /user 200', async () => {
     expect(response.statusCode).toBe(200)
 });
 
-it('GET /Login 200', async () => {
+it('POST /Login 200', async () => {
     const response = await request(app).post(`/Login`).send({
         userId : userId,
         password : password
@@ -30,6 +30,15 @@ it('GET /Login 200', async () => {
     accessToken = JSON.parse(response.res.text).token
     expect(response.statusCode).toBe(200)
 });
+
+it('GET /user/:userId 200', async () => {
+    const response = await request(app).get(`/user/${userId}`).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(200)
+});
+
 
 it('PUT /user/:userId/account/:accountId/deposit 200', async () => {
     const response = await request(app).put(`/user/${userId}/account/${accountId}/deposit?money=100000`).set(
