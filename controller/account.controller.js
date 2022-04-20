@@ -23,8 +23,8 @@ exports.getAccount = async (req, res, next) => {
         )
     } catch (err) {
         switch(err.message){
-            case "Bad request":
-                return next(createError(400, 'Bad request'))
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
             case "NotFoundError":
                 return next(createError(404, 'NotFoundError'))
             default:
@@ -60,8 +60,8 @@ exports.addMoney = async (req, res, next) => {
         )
     } catch (err) {
         switch(err.message){
-            case "Bad request":
-                return next(createError(400, 'Bad request'))
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
             case "NotFoundError":
                 return next(createError(404, 'NotFoundError'))
             default:
@@ -80,7 +80,7 @@ exports.subMoney = async (req, res, next) => {
     }
 
     try {
-        const account =await accountService.subMoney(userId, accountId, money)
+        const account = await accountService.subMoney(userId, accountId, money)
 
         if(account.message){
             const err = new Error(account.message)
@@ -96,8 +96,8 @@ exports.subMoney = async (req, res, next) => {
         )
     } catch (err) {
         switch(err.message){
-            case "Bad request":
-                return next(createError(400, 'Bad request'))
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
             case "NotFoundError":
                 return next(createError(404, 'NotFoundError'))
             default:

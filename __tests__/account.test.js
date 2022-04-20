@@ -55,14 +55,46 @@ it('PUT /user/:userId/account/:accountId/deposit 200', async () => {
     expect(response.statusCode).toBe(200)
 });
 
+it('PUT /user/:userId/account/:accountId/deposit 400', async () => {
+    const response = await request(app).put(`/user/${userId}/account/${accountId}/deposit`).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(400)
+});
+
+it('PUT /user/:userId/account/:accountId/deposit 404', async () => {
+    const response = await request(app).put(`/user/${userId}/account/accountNotFoundTest/deposit?money=100000`).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(404)
+});
+
+
 it('PUT /user/:userId/account/:accountId/withdrawal 200', async () => {
-    const response = await request(app).put(`/user/${userId}/account/${accountId}/deposit?money=100000`).set(
+    const response = await request(app).put(`/user/${userId}/account/${accountId}/withdrawal?money=100000`).set(
         'Authorization' ,  `Bearer ${accessToken}`
     );
 
     expect(response.statusCode).toBe(200)
 });
 
+it('PUT /user/:userId/account/:accountId/withdrawal 400', async () => {
+    const response = await request(app).put(`/user/${userId}/account/${accountId}/withdrawal?money=9999999999`).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(400)
+});
+
+it('PUT /user/:userId/account/:accountId/withdrawal 404', async () => {
+    const response = await request(app).put(`/user/${userId}/account/accountNotFoundTest/withdrawal?money=100000`).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(404)
+});
 
 it('DELETE /user/:userId 200' , async () => {
     const response = await request(app).delete(`/user/${userId}?password=${password}`)

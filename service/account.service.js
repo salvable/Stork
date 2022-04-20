@@ -25,7 +25,7 @@ exports.addAccount = async (userId,transaction = undefined) => {
         },{transaction: t})
 
         if(!newAccount){
-            const err = new Error("Bad request")
+            const err = new Error("BadRequestError")
             throw err
         }
 
@@ -81,7 +81,7 @@ exports.subMoney = async (userId, accountId, money) => {
         }
 
         if(account.money < money){
-            const err = new Error("Bad request")
+            const err = new Error("BadRequestError")
             throw err
         }
 
