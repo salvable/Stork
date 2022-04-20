@@ -39,6 +39,13 @@ it('GET /account/:userId 200', async () => {
     expect(response.statusCode).toBe(200)
 });
 
+it('GET /account/:userId 404', async () => {
+    const response = await request(app).get(`/account/NotFoundTest!!`).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(404)
+});
 
 it('PUT /user/:userId/account/:accountId/deposit 200', async () => {
     const response = await request(app).put(`/user/${userId}/account/${accountId}/deposit?money=100000`).set(

@@ -8,7 +8,7 @@ exports.getUser = async (req, res, next) => {
     const userId = req.params.userId
 
     if(!userId){
-        return next(createError(400, 'Bad request'))
+        return next(createError(400, 'BadRequestError'))
     }
 
     try{
@@ -25,10 +25,10 @@ exports.getUser = async (req, res, next) => {
             })
     }catch (err){
         switch(err.message){
-            case "Bad request":
-                return next(createError(400, 'Bad request'))
-            case "Not Found":
-                return next(createError(404, 'Not Found'))
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
             default:
                 return next(createError(500, 'Error'))
         }
@@ -42,7 +42,7 @@ exports.checkUser = async (req, res, next) => {
     const password = req.query.password
 
     if(!userId || !password) {
-        return next(createError(400, 'Bad request'))
+        return next(createError(400, 'BadRequestError'))
     }
 
     try{
@@ -78,7 +78,7 @@ exports.addUser = async (req, res, next) => {
     const phoneNumber = req.body.phoneNumber
 
     if(!userId || !password || !email || !name || !phoneNumber){
-        return next(createError(400, 'Bad request'))
+        return next(createError(400, 'BadRequestError'))
     }
 
 
@@ -114,10 +114,10 @@ exports.addUser = async (req, res, next) => {
         )
     } catch (err) {
         switch(err.message){
-            case "Bad request":
-                return next(createError(400, 'Bad request'))
-            case "Not Found":
-                return next(createError(404, 'Not Found'))
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
             case "Conflict":
                 return next(createError(409, 'Conflict'))
             default:
@@ -134,23 +134,22 @@ exports.updateUser = async (req, res, next) => {
     const phoneNumber = req.body.phoneNumber
 
     if(!userId || !password || !email || !name || !phoneNumber){
-        return next(createError(400, 'Bad request'))
-    }
-
-    const isExistUser = await userService.getUser(userId)
-
-    if(isExistUser.message == "Not Found"){
-        return next(createError(404, 'Not Found'))
+        return next(createError(400, 'BadRequestError'))
     }
 
     try {
+        const isExistUser = await userService.getUser(userId)
+
+        if(isExistUser.message) {
+            const err = new Error(isExistUser.message)
+            throw err
+        }
 
         const user = await models.sequelize.transaction(async (t) => {
             const user = await userService.updateUser(userId,password,email,name,phoneNumber,t)
 
-            if(user == "Conflict"){
-                const err = new Error("Conflict")
-                err.name = "Conflict"
+            if(user.message){
+                const err = new Error(user.message)
                 throw err
             }
 
@@ -164,11 +163,11 @@ exports.updateUser = async (req, res, next) => {
             }
         )
     } catch (err) {
-        switch(err.name){
-            case "Conflict":
-                return next(createError(409, 'Conflict'))
-            case "Bad request":
-                return next(createError(400, 'Bad request'))
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
             default:
                 return next(createError(500, 'Error'))
         }
@@ -180,7 +179,7 @@ exports.deleteUser = async (req, res, next) => {
     const password = req.query.password
 
     if(!userId || !password){
-        return next(createError(400, 'Bad request'))
+        return next(createError(400, 'BadRequestError'))
     }
 
     try {

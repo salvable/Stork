@@ -149,14 +149,12 @@ exports.getAccount = async (userId) => {
 
         if(!account){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
         return account
 
     } catch (err) {
-        console.log(err)
-        return err.name
+        return err
     }
 }

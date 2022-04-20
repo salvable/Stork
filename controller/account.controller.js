@@ -11,8 +11,9 @@ exports.getAccount = async (req, res, next) => {
     try {
         const account = await accountService.getAccount(userId)
 
-        if(account == "NotFoundError"){
-            return next(createError(404, 'NotFoundError'))
+        if(account.message){
+            const err = new Error(account.message)
+            throw err
         }
 
         return res.send(
@@ -21,7 +22,14 @@ exports.getAccount = async (req, res, next) => {
             }
         )
     } catch (err) {
-        return res.status(500).json(err)
+        switch(err.message){
+            case "Bad request":
+                return next(createError(400, 'Bad request'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
     }
 }
 

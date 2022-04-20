@@ -37,7 +37,7 @@ exports.getUser = async (userId) => {
         })
 
         if(user == null){
-            const err = new Error("Not Found")
+            const err = new Error("NotFoundError")
             throw err
         }
 
@@ -75,9 +75,10 @@ exports.checkUser = async (userId,password) => {
 
 exports.updateUser = async (userId,password,email,name,phoneNumber,transaction = undefined) => {
     const t = transaction || undefined
-    const hash_password = await bcrypt.hash(password, 10)
 
     try {
+        const hash_password = await bcrypt.hash(password, 10)
+
         await users.update({
             password: hash_password,
             email: email,
