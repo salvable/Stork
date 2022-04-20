@@ -57,7 +57,6 @@ exports.checkUser = async (userId,password) => {
 
         if(user == null){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
@@ -65,13 +64,12 @@ exports.checkUser = async (userId,password) => {
 
         if(!compareResult){
             const err = new Error("BadRequestError")
-            err.name = "BadRequestError"
             throw err
         }
 
         return true
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -80,7 +78,7 @@ exports.updateUser = async (userId,password,email,name,phoneNumber,transaction =
     const hash_password = await bcrypt.hash(password, 10)
 
     try {
-        const updateUser = await users.update({
+        await users.update({
             password: hash_password,
             email: email,
             name: name,
@@ -93,11 +91,11 @@ exports.updateUser = async (userId,password,email,name,phoneNumber,transaction =
         return true
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
-exports.deleteUser = async (userId) => {
+exports.deleteUser = async (userId, password) => {
     try {
         const user = await users.findOne({
             where: {
@@ -107,25 +105,25 @@ exports.deleteUser = async (userId) => {
 
         if(!user){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
+            throw err
+        }
+
+        const compareResult = await bcrypt.compare(password, user.password);
+
+        if(!compareResult){
+            const err = new Error("BadRequestError")
             throw err
         }
 
         //비밀번호가 같다면
-             const result = await users.destroy({
+             await users.destroy({
                 where: {
                     userId: userId
                 }
             })
 
-            if(result == "SequelizeForeignKeyConstraintError"){
-                const err = new Error("SequelizeForeignKeyConstraintError")
-                err.name = "SequelizeForeignKeyConstraintError"
-                throw err
-            }
-
         return true
     } catch (err) {
-        return err.name
+        return err
     }
 }

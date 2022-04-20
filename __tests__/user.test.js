@@ -124,6 +124,15 @@ it('GET /verification/:userId 400' , async () => {
     expect(response.statusCode).toBe(400)
 });
 
+it('GET /verification/:userId 2 400' , async () => {
+    const response = await request(app).get(`/verification/${userId}?password=BadResquestTest!!`)
+        .set(
+            'Authorization' ,  `Bearer ${accessToken}`
+        );
+
+    expect(response.statusCode).toBe(400)
+});
+
 it('GET /verification/:userId 404' , async () => {
     const response = await request(app).get(`/verification/NotFoundTest?password=${password}`)
         .set(
@@ -133,8 +142,27 @@ it('GET /verification/:userId 404' , async () => {
     expect(response.statusCode).toBe(404)
 });
 
+it('DELETE /user/:userId 400' , async () => {
+    const response = await request(app).delete(`/user/${userId}?password=BadResquestTestPassword"`)
+        .set(
+            'Authorization' ,  `Bearer ${accessToken}`
+        );
+
+    expect(response.statusCode).toBe(400)
+});
+
+it('DELETE /user/:userId 404' , async () => {
+    const response = await request(app).delete(`/user/UserNotExistTest
+    ?password=${password}"`)
+        .set(
+            'Authorization' ,  `Bearer ${accessToken}`
+        );
+
+    expect(response.statusCode).toBe(404)
+});
+
 it('DELETE /user/:userId 200' , async () => {
-    const response = await request(app).delete(`/user/${userId}`)
+    const response = await request(app).delete(`/user/${userId}?password=${password}`)
         .set(
             'Authorization' ,  `Bearer ${accessToken}`
         );

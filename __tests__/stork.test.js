@@ -53,11 +53,10 @@ it('POST /stork/purchase/:userId/:accountId 404', async () => {
 
 
 it('DELETE /user/:userId 200' , async () => {
-    const response = await request(app).delete(`/user/${userId}`)
+    const response = await request(app).delete(`/user/${userId}?password=${password}`)
         .set(
             'Authorization' ,  `Bearer ${accessToken}`
         );
 
     expect(response.statusCode).toBe(200)
 });
-

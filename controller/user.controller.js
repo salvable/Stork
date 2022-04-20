@@ -29,8 +29,6 @@ exports.getUser = async (req, res, next) => {
                 return next(createError(400, 'Bad request'))
             case "Not Found":
                 return next(createError(404, 'Not Found'))
-            case "Conflict":
-                return next(createError(409, 'Conflict'))
             default:
                 return next(createError(500, 'Error'))
         }
@@ -50,9 +48,8 @@ exports.checkUser = async (req, res, next) => {
     try{
         const user = await userService.checkUser(userId,password)
 
-        if(user == "NotFoundError" || user == "BadRequestError"){
-            const err = new Error(user)
-            err.name = user
+        if(user.message){
+            const err = new Error(user.message)
             throw err
         }
 
@@ -62,7 +59,7 @@ exports.checkUser = async (req, res, next) => {
         })
 
     } catch (err) {
-        switch(err.name){
+        switch(err.message){
             case "BadRequestError":
                 return next(createError(400, 'BadRequestError'))
             case "NotFoundError":
@@ -180,16 +177,16 @@ exports.updateUser = async (req, res, next) => {
 
 exports.deleteUser = async (req, res, next) => {
     const userId = req.params.userId
+    const password = req.query.password
 
-    if(!userId){
+    if(!userId || !password){
         return next(createError(400, 'Bad request'))
     }
 
     try {
-            const result = await userService.deleteUser(userId)
-            if(result == "NotFoundError" || result == "SequelizeForeignKeyConstraintError"){
-                const err = new Error(result)
-                err.name = result
+            const result = await userService.deleteUser(userId, password)
+            if(result.message){
+                const err = new Error(result.message)
                 throw err
             }
 
@@ -199,9 +196,11 @@ exports.deleteUser = async (req, res, next) => {
             }
         )
     } catch (err) {
-        switch(err.name){
-            case "Bad NotFoundError":
-                return next(createError(404, 'Bad NotFoundError'))
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
             default:
                 return next(createError(500, 'Error'))
         }

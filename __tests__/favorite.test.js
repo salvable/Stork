@@ -32,7 +32,7 @@ it('POST /Login 200', async () => {
 });
 
 it('DELETE /user/:userId 200' , async () => {
-    const response = await request(app).delete(`/user/${userId}`)
+    const response = await request(app).delete(`/user/${userId}?password=${password}`)
         .set(
             'Authorization' ,  `Bearer ${accessToken}`
         );

@@ -31,8 +31,8 @@ it('POST /Login 200', async () => {
     expect(response.statusCode).toBe(200)
 });
 
-it('GET /user/:userId 200', async () => {
-    const response = await request(app).get(`/user/${userId}`).set(
+it('GET /account/:userId 200', async () => {
+    const response = await request(app).get(`/account/${userId}`).set(
         'Authorization' ,  `Bearer ${accessToken}`
     );
 
@@ -58,7 +58,7 @@ it('PUT /user/:userId/account/:accountId/withdrawal 200', async () => {
 
 
 it('DELETE /user/:userId 200' , async () => {
-    const response = await request(app).delete(`/user/${userId}`)
+    const response = await request(app).delete(`/user/${userId}?password=${password}`)
         .set(
             'Authorization' ,  `Bearer ${accessToken}`
         );
