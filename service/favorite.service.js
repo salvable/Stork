@@ -1,6 +1,7 @@
 const db = require('../models')
 const {Op} = require("sequelize");
 const favorites = db["favorite"]
+const users = db["user"]
 
 exports.addFavorite  = async (favoriteId,favoriteName,userId,type) => {
 
@@ -15,7 +16,6 @@ exports.addFavorite  = async (favoriteId,favoriteName,userId,type) => {
         // 이미 즐겨찾기가 되어있다면
         if(favorite){
             const err = new Error("Conflict")
-            err.name = "Conflict"
             throw err
         }
 
@@ -29,7 +29,7 @@ exports.addFavorite  = async (favoriteId,favoriteName,userId,type) => {
         return newFavorite
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -44,14 +44,13 @@ exports.removeFavorite  = async (favoriteId,userId) => {
 
         if(!favorite){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
         await favorites.destroy({
             where: {
-            favoriteId: favoriteId,
-            userId: userId
+                favoriteId: favoriteId,
+                userId: userId
             }
         })
 
@@ -59,33 +58,48 @@ exports.removeFavorite  = async (favoriteId,userId) => {
         return true
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
 exports.getFavorites  = async (userId) => {
     try {
+        const user = await users.findOne({
+            where:{
+                userId: userId
+            }
+        })
+
+        if (!user){
+            const err = new Error("NotFoundError")
+            throw err
+        }
+
         const favorite = await favorites.findAll({
             where:{
                 userId: userId
             }
         })
 
-        if(!favorite){
-            const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
-            throw err
-        }
-
         return favorite
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
 exports.getFavorite  = async (userId, favoriteId) => {
     try {
+        const user = await users.findOne({
+            where:{
+                userId: userId
+            }
+        })
+
+        if (!user){
+            const err = new Error("NotFoundError")
+            throw err
+        }
 
         const favorite = await favorites.findOne({
             where:{
@@ -94,16 +108,15 @@ exports.getFavorite  = async (userId, favoriteId) => {
             }
         })
 
-        if(!favorite){
+        if (!favorite){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
         return favorite
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -126,6 +139,6 @@ exports.getFavoritesByName  = async (userId, search) => {
         return favorite
 
     } catch (err) {
-        return err.name
+        return err
     }
 }

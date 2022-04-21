@@ -8,21 +8,35 @@ exports.addFavorite = async (req, res, next) => {
     const favoriteName = req.body.favoriteName
     const type = req.body.type
 
-    if(!userId || !favoriteId || !favoriteName){
+    if(!userId || !favoriteId || !favoriteName || !type){
         return next(createError(400, 'BadRequestError'))
     }
 
-    const favorite = await favoriteService.addFavorite(favoriteId,favoriteName,userId,type)
+    try{
+        const favorite = await favoriteService.addFavorite(favoriteId,favoriteName,userId,type)
 
-    if(favorite == "Conflict"){
-        return next(createError(409, 'Conflict'))
-    }
+        if(favorite.message){
+            const err = new Error(favorite.message)
+            throw err
+        }
 
         return res.send(
             {
                 favorite: favorite
             }
         )
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            case "Conflict":
+                return next(createError(409, 'Conflict'))
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
 
 }
 
@@ -34,17 +48,29 @@ exports.removeFavorite = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const result = await favoriteService.removeFavorite(favoriteId,userId)
+    try{
+        const result = await favoriteService.removeFavorite(favoriteId,userId)
 
-    if(result == "NotFoundError"){
-        return next(createError(404, 'NotFoundError'))
-    }
-
-    return res.send(
-        {
-            result: result
+        if(result.message){
+            const err = new Error(result.message)
+            throw err
         }
-    )
+
+        return res.send(
+            {
+                result: result
+            }
+        )
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
 
 }
 
@@ -55,17 +81,29 @@ exports.getFavorites = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const favorites = await favoriteService.getFavorites(userId)
+    try{
+        const favorites = await favoriteService.getFavorites(userId)
 
-    if(favorites == "NotFoundError"){
-        return next(createError(404, 'NotFoundError'))
-    }
-
-    return res.send(
-        {
-            favorites: favorites
+        if(favorites.message){
+            const err = new Error(favorites.message)
+            throw err
         }
-    )
+
+        return res.send(
+            {
+                favorites: favorites
+            }
+        )
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
 }
 
 exports.getFavorite = async (req, res, next) => {
@@ -76,17 +114,31 @@ exports.getFavorite = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const favorite = await favoriteService.getFavorite(userId,favoriteId)
+    try{
+        const favorite = await favoriteService.getFavorite(userId,favoriteId)
 
-    if(favorite == "NotFoundError"){
-        return next(createError(404, 'NotFoundError'))
+        if(favorite.message){
+            const err = new Error(favorite.message)
+            throw err
+        }
+
+        return res.send(
+            {
+                favorite: favorite
+            }
+        )
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
     }
 
-    return res.send(
-        {
-            favorite: favorite
-        }
-    )
+
 }
 
 exports.getFavoritesByName = async (req, res, next) => {
@@ -97,11 +149,24 @@ exports.getFavoritesByName = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const favorites = await favoriteService.getFavoritesByName(userId,search)
+    try{
+        const favorites = await favoriteService.getFavoritesByName(userId,search)
 
-    return res.send(
-        {
-            favorite: favorites
+        if(favorites.message){
+            const err = new Error(favorites.message)
+            throw err
         }
-    )
+
+        return res.send(
+            {
+                favorite: favorites
+            }
+        )
+    } catch (err) {
+        switch(err.message){
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
+
 }
