@@ -1,5 +1,6 @@
 const createError = require('http-errors')
 const storkService = require('../service/stork.service.js')
+const userService = require('../service/user.service.js')
 const accountService = require('../service/account.service')
 const models = require('../models')
 
@@ -48,7 +49,7 @@ exports.addStork = async (req, res, next) => {
             case "NotFoundError":
                 return next(createError(404, 'NotFoundError'))
             default:
-                return res.status(500).json(err)
+                return next(createError(500, 'Error'))
 
         }
     }
@@ -61,23 +62,21 @@ exports.subStork = async (req, res, next) => {
     const number = req.query.number
     const price = req.query.price
 
-    if(!userId || !storkName || !number || !price){
+    if(!userId || !storkName || !number || !price || !accountId){
         return next(createError(400, 'BadRequestError'))
     }
 
     try {
         await models.sequelize.transaction(async (t) => {
             const account = await accountService.addMoneyByStork(userId, accountId, number, price, t)
-            if(account == "NotFoundError" || account == "BadRequestError"){
-                const err = new Error(account)
-                err.name = account
+            if(account.message){
+                const err = new Error(account.message)
                 throw err
             }
 
             const stork = await storkService.subStork(userId, storkName, number, t)
-            if(stork == "NotFoundError" || stork == "BadRequestError"){
-                const err = new Error(stork)
-                err.name = stork
+            if(stork.message){
+                const err = new Error(stork.message)
                 throw err
             }
         })
@@ -91,14 +90,15 @@ exports.subStork = async (req, res, next) => {
                 stork: stork
             }
         )
+
     } catch (err) {
-        switch(err.name){
-            case "NotFoundError":
-                return next(createError(400, 'NotFoundError'))
+        switch(err.message){
             case "BadRequestError":
-                return next(createError(404, 'BadRequestError'))
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
             default:
-                return res.status(500).json(err)
+                return next(createError(500, 'Error'))
 
         }
     }
@@ -106,7 +106,7 @@ exports.subStork = async (req, res, next) => {
 
 exports.getStork = async (req, res, next) => {
     const userId = req.params.userId
-    const storkName = req.query.storkName
+    const storkName = req.params.storkName
 
     if(!userId || !storkName ){
         return next(createError(400, 'BadRequestError'))
@@ -115,8 +115,9 @@ exports.getStork = async (req, res, next) => {
     try {
         const stork = await storkService.getStork(userId, storkName)
 
-        if(!stork){
-            return next(createError(404, 'NotFoundError'))
+        if(stork.message){
+            const err = new Error(stork.message)
+            throw err
         }
 
         return res.send(
@@ -125,7 +126,15 @@ exports.getStork = async (req, res, next) => {
             }
         )
     } catch (err) {
-        return res.status(500).json(err)
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+
+        }
     }
 }
 
@@ -137,18 +146,32 @@ exports.getStorks = async (req, res, next) => {
     }
 
     try {
-        const stork = await storkService.getStorks(userId)
+        const user = await userService.getUser(userId)
+        if (user.message){
+            const err = new Error(user.message)
+            throw err
+        }
 
-        if(!stork){
-            return next(createError(404, 'NotFoundError'))
+        const storks = await storkService.getStorks(userId)
+
+        if(storks.message){
+            const err = new Error(storks.message)
+            throw err
         }
 
         return res.send(
             {
-                account: stork
+                account: storks
             }
         )
     } catch (err) {
-        return res.status(500).json(err)
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
     }
 }

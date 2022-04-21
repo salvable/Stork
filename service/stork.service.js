@@ -42,23 +42,25 @@ exports.addStork  = async (userId, storkName, number, transaction) => {
 
 exports.subStork  = async (userId, storkName, number, transaction) => {
     const t = transaction || undefined
+    console.log(userId,storkName)
 
     try {
         const stork = await storks.findOne({
             where:{
-                userId: userId
+                userId: userId,
+                storkName: storkName
             }
         })
+        console.log(stork)
         // 해당 주식을 보유중이지 않다면 에러
         if(!stork){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
         if(number > stork.storkCount){
+            console.log("##################33")
             const err = new Error("BadRequestError")
-            err.name = "BadRequestError"
             throw err
         }
 
@@ -74,7 +76,7 @@ exports.subStork  = async (userId, storkName, number, transaction) => {
         return true
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -95,7 +97,7 @@ exports.getStork = async (userId,storkName) => {
 
         return stork
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -109,12 +111,11 @@ exports.getStorks = async (userId) => {
 
         if(stork == null){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
         return stork
     } catch (err) {
-        return err.name
+        return err
     }
 }

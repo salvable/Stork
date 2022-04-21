@@ -2,7 +2,7 @@ const db = require('../models')
 const bcrypt = require("bcrypt");
 const users = db["user"]
 
-exports.addUser = async (userId,password,email,name,phoneNumber,transaction = undefined) => {
+exports.addUser = async (userId,password,email,name,phoneNumber,transaction) => {
     const t = transaction || undefined
     const hash_password = await bcrypt.hash(password, 10)
 
@@ -73,7 +73,7 @@ exports.checkUser = async (userId,password) => {
     }
 }
 
-exports.updateUser = async (userId,password,email,name,phoneNumber,transaction = undefined) => {
+exports.updateUser = async (userId,password,email,name,phoneNumber,transaction) => {
     const t = transaction || undefined
 
     try {
