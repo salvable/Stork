@@ -15,18 +15,17 @@ exports.addComment = async (boardId, userId, password, content) => {
 
         if(!comment){
             const err = new Error("BadRequestError")
-            err.name = "BadRequestError"
             throw err
         }
 
         return comment
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
-exports.getComment = async (boardId) => {
+exports.getComments = async (boardId) => {
     try {
         const comment = await Comment.findAll({
             where:{
@@ -37,15 +36,14 @@ exports.getComment = async (boardId) => {
         })
 
         if(!comment){
-            const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
+            const err = new Error("BadRequestError")
             throw err
         }
 
         return comment
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -60,24 +58,24 @@ exports.deleteComment = async (boardId,commentId,password) => {
 
         if(!comment){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
-        if(comment.password == password){
-            const result = await Comment.destroy({
-                where: {
-                    boardId: boardId,
-                    commentId: commentId
-                }
-            })
-
-            return result
+        if(comment.password != password){
+            const err = new Error("Forbidden")
+            throw err
         }
 
-        return false
+        await Comment.destroy({
+            where: {
+                boardId: boardId,
+                commentId: commentId
+            }
+        })
+
+        return true
 
     } catch (err) {
-        return err.name
+        return err
     }
 }

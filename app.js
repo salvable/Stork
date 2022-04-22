@@ -56,7 +56,8 @@ app.delete('/board/:boardId', boardController.deleteBoard)
 app.put('/board/:boardId' ,boardController.modifyBoard)
 app.get('/board/:boardId/checkPw' ,boardController.checkBoardPassword)
 app.post('/board/:boardId/comment', authMiddleware.checkAuth, commentController.addComment)
-app.get('/board/:boardId/comment', commentController.getComment)
+app.get('/board/:boardId/comment', commentController.getComments)
+app.delete('/board/:boardId/comment/:commentId', commentController.deleteComment)
 app.put('/board/:boardId/star',authMiddleware.checkAuth ,boardController.updateStar)
 
 const driver = async () =>{
