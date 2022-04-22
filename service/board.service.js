@@ -15,14 +15,13 @@ exports.addBoard = async (name,content,writer,password) => {
 
         if(!board){
             const err = new Error("BadRequestError")
-            err.name = "BadRequestError"
             throw err
         }
 
         return board
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -38,14 +37,13 @@ exports.modifyBoard = async (boardId,name,content) => {
 
         if(!updateBoard){
             const err = new Error("BadRequestError")
-            err.name = "BadRequestError"
             throw err
         }
 
         return true
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -60,14 +58,13 @@ exports.checkBoard = async (boardId,password) => {
 
         if(!board){
             const err = new Error("Forbidden")
-            err.name = "Forbidden"
             throw err
         }
 
         return true
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -81,14 +78,13 @@ exports.getBoard = async (boardId) => {
 
         if(!board){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
         return board
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -102,15 +98,14 @@ exports.getBoardWithPassword = async (boardId,password) => {
         })
 
         if(!board){
-            const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
+            const err = new Error("BadRequestError")
             throw err
         }
 
         return board
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -128,14 +123,13 @@ exports.getBoards = async (page, pageSize) => {
 
         if(!board){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
         return board
 
     } catch (err) {
-        return err.name
+        return err
     }
 }
 
@@ -155,7 +149,9 @@ exports.deleteBoard = async (boardId) => {
     }
 }
 
-exports.updateHit = async (boardId) => {
+exports.updateHit = async (boardId,transaction) => {
+    const t = transaction || undefined
+
     try {
         const board = await Board.findOne({
             where:{
@@ -165,22 +161,22 @@ exports.updateHit = async (boardId) => {
 
         if(!board){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
-        const newBoard = await Board.update({
+        await Board.update({
             hit: board.hit + 1
         },{
             where:{
                 boardId: boardId
-            }}
-        )
+            }},{
+            transaction: t
+        })
 
         return true
 
     } catch (err) {
-        return false
+        return err
     }
 }
 
@@ -196,7 +192,6 @@ exports.updateStar = async (boardId,starType,transaction = undefined) => {
 
         if(!board){
             const err = new Error("NotFoundError")
-            err.name = "NotFoundError"
             throw err
         }
 
@@ -219,6 +214,6 @@ exports.updateStar = async (boardId,starType,transaction = undefined) => {
         return true
 
     } catch (err) {
-        return false
+        return err
     }
 }

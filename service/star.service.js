@@ -2,6 +2,7 @@ const db = require('../models')
 const Star = db["star"]
 
 exports.isExistStar = async (userId,boardId) => {
+    try{
         const star = await Star.findOne({
             where: {
                 userId: userId,
@@ -9,24 +10,36 @@ exports.isExistStar = async (userId,boardId) => {
             }
         })
 
-        if(!star){
-            return false
+        if(star){
+            const err = new Error("Conflict")
+            throw err
         }
 
         return true
+    } catch (e) {
+        return e
+    }
+
 }
 
 exports.addStar = async (boardId,userId,starType,transaction = undefined) => {
     const t = transaction || undefined
-    const star = await Star.create({
+
+    try{
+        const star = await Star.create({
             userId: userId,
             boardId: boardId,
             starType: starType
-    },{transaction: t})
+        },{transaction: t})
 
-    if(!star){
-        return false
+        if(!star){
+            const err = new Error("BadRequestError")
+            throw err
+        }
+
+        return star
+    } catch (e) {
+        return e
     }
 
-    return star
 }

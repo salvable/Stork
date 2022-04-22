@@ -4,7 +4,7 @@ const boardService =require("../service/board.service")
 const starService = require("../service/star.service");
 
 exports.addBoard = async (req, res, next) => {
-    const name = req.body.userId
+    const name = req.body.name
     const content = req.body.content
     const writer = req.body.writer || "익명"
     const password = req.body.password
@@ -13,17 +13,30 @@ exports.addBoard = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const board = await boardService.addBoard(name,content,writer,password)
+    try{
+        const board = await boardService.addBoard(name,content,writer,password)
 
-    if(board == "BadRequestError"){
-        return next(createError(400, 'BadRequestError'))
-    }
-
-    return res.send(
-        {
-            board: board
+        if(board.message){
+            const err = new Error(board.message)
+            throw err
         }
-    )
+
+        return res.send(
+            {
+                board: board
+            }
+        )
+
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
 }
 
 exports.modifyBoard = async (req, res, next) => {
@@ -36,52 +49,82 @@ exports.modifyBoard = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const checkBoard = await boardService.checkBoard(boardId,password)
-    if(checkBoard == "Forbidden"){
-        return next(createError(403, 'Forbidden'))
-    }
-
-    const board = await boardService.modifyBoard(boardId,name,content)
-
-    if(board == "BadRequestError"){
-        return next(createError(400, 'BadRequestError'))
-    }
-
-    const newBoard = await boardService.getBoard(boardId)
-
-    if(!newBoard){
-        return next(createError(404, 'NotFoundError'))
-    }
-
-    return res.send(
-        {
-            board: newBoard
+    try{
+        const checkBoard = await boardService.checkBoard(boardId,password)
+        if(checkBoard.message){
+            const err = new Error(checkBoard.message)
+            throw err
         }
-    )
+
+        const board = await boardService.modifyBoard(boardId,name,content)
+
+        if(board.message){
+            const err = new Error(board.message)
+            throw err
+        }
+
+        const newBoard = await boardService.getBoard(boardId)
+
+        if(newBoard.message){
+            const err = new Error(newBoard.message)
+            throw err
+        }
+
+        return res.send(
+            {
+                board: newBoard
+            }
+        )
+
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "Forbidden":
+                return next(createError(403, 'Forbidden'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
+
 }
 
 exports.deleteBoard = async (req, res, next) => {
     const boardId = req.params.boardId
     const password = req.query.password
 
-    console.log(boardId,password)
     if(!boardId || !password){
         return next(createError(400, 'Bad request'))
     }
 
-    const board = await boardService.getBoardWithPassword(boardId,password)
+    try{
+        const board = await boardService.getBoardWithPassword(boardId,password)
 
-    if(board == "NotFoundError"){
-        return next(createError(404, 'NotFoundError'))
+        if(board.message){
+            const err = new Error(board.message)
+            throw err
+        }
+
+        const result = await boardService.deleteBoard(boardId)
+
+        return res.send(
+            {
+                result: result
+            }
+        )
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
     }
 
-    const result = await boardService.deleteBoard(boardId)
-
-    return res.send(
-        {
-            result: result
-        }
-    )
 }
 
 exports.getBoard = async (req, res, next) => {
@@ -91,23 +134,41 @@ exports.getBoard = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const result = await boardService.updateHit(boardId)
+    try{
+        const board = await models.sequelize.transaction(async (t) => {
+            const result = await boardService.updateHit(boardId,t)
 
-    if(!result){
-        return next(createError(400,'BadRequestError'))
-    }
+            if (result.message) {
+                const err = new Error(result.message)
+                throw err
+            }
 
-    const board = await boardService.getBoard(boardId)
+            const board = await boardService.getBoard(boardId)
 
-    if(!board || board == "NotFoundError"){
-        return next(createError(404, 'NotFoundError'))
-    }
+            if (board.message) {
+                const err = new Error(board.message)
+                throw err
+            }
 
-    return res.send(
-        {
-            board: board
+            return board
+        })
+
+        return res.send(
+            {
+                board: board
+            }
+        )
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
         }
-    )
+    }
+
 }
 
 exports.getBoards = async (req, res, next) => {
@@ -122,19 +183,30 @@ exports.getBoards = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
+    try{
+        const board = await boardService.getBoards(page,pageSize)
 
-    const board = await boardService.getBoards(page,pageSize)
+        if(board.message){
+            const err = new Error(board.message)
+            throw err
+        }
 
-    if(board == "BadRequestError"){
-        return next(createError(400, 'BadRequestError'))
+        return res.send(
+            {
+                board: board.rows,
+                totalCount: board.count
+            }
+        )
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
     }
 
-    return res.send(
-        {
-            board: board.rows,
-            totalCount: board.count
-        }
-    )
+
 }
 
 exports.updateStar = async (req, res, next) => {
@@ -146,32 +218,58 @@ exports.updateStar = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const isExistStar = await starService.isExistStar(userId,boardId)
-    if(isExistStar){
-        return next(createError(409, "Conflict"))
-    }
+    try{
+        const isExistStar = await starService.isExistStar(userId,boardId)
 
-    const result = await models.sequelize.transaction(async (t) => {
+        if(isExistStar.message){
+            const err = new Error(isExistStar.message)
+            throw err
+        }
+
+        const result = await models.sequelize.transaction(async (t) => {
             const result = await boardService.updateStar(boardId, starType, t)
+
+            if(result.message){
+                const err = new Error(result.message)
+                throw err
+            }
+
             const star = await starService.addStar(boardId, userId, starType, t)
-        return result
+
+            if(star.message){
+                const err = new Error(star.message)
+                throw err
+            }
+
+            return result
         })
 
-    if(!result){
-        return next(createError(400, 'BadRequestError'))
-    }
+        const newBoard = await boardService.getBoard(boardId)
 
-    const newBoard = await boardService.getBoard(boardId)
-
-    if(newBoard == "NotFoundError"){
-        return next(createError(404, 'NotFoundError'))
-    }
-
-    return res.send(
-        {
-            board: newBoard
+        if(newBoard.message){
+            const err = new Error(newBoard.message)
+            throw err
         }
-    )
+
+        return res.send(
+            {
+                board: newBoard
+            }
+        )
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            case "Conflict":
+                return next(createError(409, 'Conflict'))
+            default:
+                return next(createError(500, 'Error'))
+        }
+    }
+
+
 }
 
 exports.checkBoardPassword = async (req, res, next) => {
@@ -182,16 +280,29 @@ exports.checkBoardPassword = async (req, res, next) => {
         return next(createError(400, 'BadRequestError'))
     }
 
-    const board = await boardService.getBoardWithPassword(boardId,password)
+    try{
+        const board = await boardService.getBoardWithPassword(boardId,password)
 
-    if(board == "NotFoundError"){
-        return next(createError(404, 'NotFoundError'))
+        if(board.message){
+            const err = new Error(board.message)
+            throw err
+        }
+
+        return res.send(
+            {
+                result: true
+            }
+        )
+    } catch (err) {
+        switch(err.message){
+            case "BadRequestError":
+                return next(createError(400, 'BadRequestError'))
+            case "NotFoundError":
+                return next(createError(404, 'NotFoundError'))
+            default:
+                return next(createError(500, 'Error'))
+        }
     }
 
-    return res.send(
-        {
-            result: true
-        }
-    )
 }
 
