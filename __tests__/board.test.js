@@ -4,7 +4,9 @@ const app = require("../app")
 const userId = "testJest"
 const password = "test1234"
 const boardPassword = "1q2w3e4r!"
+const commentPassword = "avcsdg1212c!"
 let boardId = ""
+let commentId = ""
 let accessToken = ""
 
 it('POST /user 200', async () => {
@@ -158,6 +160,72 @@ it('GET /board/:boardId/checkPw 400', async () => {
     const response = await request(app).get(`/board/${boardId}/checkPw?password=passwordTest`)
 
     expect(response.statusCode).toBe(400)
+});
+
+it('POST /board/:boardId/comment 200', async () => {
+    const response = await request(app).post(`/board/${boardId}/comment`).send({
+        userId : userId,
+        password : commentPassword,
+        content : "댓글테스트입니다~"
+    }).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    commentId = JSON.parse(response.res.text).comment.commentId
+
+    expect(response.statusCode).toBe(200)
+});
+
+it('POST /board/:boardId/comment 400', async () => {
+    const response = await request(app).post(`/board/${boardId}/comment`).send({
+        content : "댓글테스트입니다~"
+    }).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(400)
+});
+
+it('POST /board/:boardId/comment 404', async () => {
+    const response = await request(app).post(`/board/NotFoundTest/comment`).send({
+        userId : userId,
+        password : commentPassword,
+        content : "댓글테스트입니다~"
+    }).set(
+        'Authorization' ,  `Bearer ${accessToken}`
+    );
+
+    expect(response.statusCode).toBe(404)
+});
+
+it('GET /board/:boardId/comment 200', async () => {
+    const response = await request(app).get(`/board/${boardId}/comment`)
+
+    expect(response.statusCode).toBe(200)
+});
+
+it('GET /board/:boardId/comment 404', async () => {
+    const response = await request(app).get(`/board/NotFoundTest/comment`)
+
+    expect(response.statusCode).toBe(404)
+});
+
+it('DELETE /board/:boardId/comment/:commentId 403' , async () => {
+    const response = await request(app).delete(`/board/${boardId}/comment/${commentId}?password=Notequelpassword`)
+
+    expect(response.statusCode).toBe(403)
+});
+
+it('DELETE /board/:boardId/comment/:commentId 404' , async () => {
+    const response = await request(app).delete(`/board/${boardId}/comment/notfound?password=${commentPassword}`)
+
+    expect(response.statusCode).toBe(404)
+});
+
+it('DELETE /board/:boardId/comment/:commentId 200' , async () => {
+    const response = await request(app).delete(`/board/${boardId}/comment/${commentId}?password=${commentPassword}`)
+
+    expect(response.statusCode).toBe(200)
 });
 
 it('DELETE /board/:boardId 400' , async () => {
