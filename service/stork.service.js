@@ -13,7 +13,10 @@ exports.addStork  = async (userId, storkName, number, transaction) => {
 
         // 해당 주식을 보유중이지 않다면 새로 생성
         if(!stork){
+            const randomString = Math.floor(Math.random() * 9999999);
+
             const newStork = await storks.create({
+                storkId: randomString,
                 userId: userId,
                 storkName: storkName,
                 storkCount: number

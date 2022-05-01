@@ -1,5 +1,10 @@
 module.exports = (sequelize, DataTypes) => {
     const stork = sequelize.define('stork', {
+        storkId: {
+            type: DataTypes.STRING(50),
+            allowNull:false,
+            primaryKey: true
+        },
         storkName: {
             type: DataTypes.STRING(50),
             allowNull:false,

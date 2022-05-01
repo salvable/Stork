@@ -8,9 +8,9 @@ const models = require('../models')
 exports.addStork = async (req, res, next) => {
     const userId = req.params.userId
     const accountId = req.params.accountId
-    const storkName = req.query.storkName
-    const number = req.query.number
-    const price = req.query.price
+    const storkName = req.body.storkName
+    const number = req.body.number
+    const price = req.body.price
 
     if(!userId || !storkName || !number || !price || !accountId){
         return next(createError(400, 'BadRequestError'))
